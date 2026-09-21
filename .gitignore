@@ -4,3 +4,4 @@ site/
 __pycache__/
 .venv/
 .claude/settings.local.json
+guncelle.log
