@@ -70,7 +70,13 @@ tek düğme ile elle değiştirilebilir. Koyu temada gölgeler daha koyu ve sert
 - **Lig rozeti.** Dolu zeminli mono etiket; Süper Lig `accent-soft`, 1. Lig nötr.
 - **Olasılık şeridi.** Üç parçalı yatay bant (ev / beraberlik / deplasman).
 - **İkon — Material Symbols Outlined.** Yalnız bölüm başlıklarında ve navigasyon
-  markasında; tablo içinde ikon kullanılmaz.
+  markasında; tablo içinde dekoratif ikon kullanılmaz.
+- **Kulüp logosu.** Kulüp adının solunda 22px, `object-fit:contain`, 4px köşe,
+  `surface-2` zeminli. Ad sütununda kimliği hızlı taramaya yarar, dekorasyon
+  değildir — bu yüzden yalnız kulüp adının geçtiği sütunda kullanılır.
+  Logosu olmayan kulüpte aynı boyutta boş yer tutucu kalır ki satırlar arası
+  hizalama bozulmasın. Logolar `assets/logo/` altında kendi sunucumuzdan
+  servis edilir, KTFF'ye sıcak bağlantı yapılmaz.
 
 ## İçerik kuralları
 

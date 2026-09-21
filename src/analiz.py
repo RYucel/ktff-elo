@@ -74,6 +74,8 @@ pack = dict(
     tarihce={t: [None if pd.isna(v) else float(v) for v in ss.loc[t]] for t in ss.index},
     sampiyonlar=sam.to_dict("records"),
     ev_avantaji_sezon={k: float(v) for k, v in ev_sezon.items()},
+    logolar=json.loads((ROOT/"data/logolar.json").read_text(encoding="utf-8"))
+            if (ROOT/"data/logolar.json").exists() else {},
     puan_basliklar=["Kulüp","O","G","B","M","A","Y","Av","P","xP","Sapma"],
     puan_sezon={f"{s}|{lg}": cetvel(g) for (s, lg), g in d.groupby(["sezon","lig"])},
     puan_tum={"Tümü": cetvel(d), "Süper Lig": cetvel(d[d.lig == "Süper Lig"]),

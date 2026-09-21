@@ -4,6 +4,7 @@ sys.stdout.reconfigure(encoding="utf-8")  # Windows cp1252 konsolunda Türkçe �
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT, SITE = ROOT/"out", ROOT/"site"
+LOGO = ROOT/"assets/logo"
 
 # indirmeye açılan veri setleri
 VERI = ["ktff_maclar.csv", "ktff_elo_maclar.csv", "ktff_elo_siralama.csv",
@@ -28,6 +29,9 @@ HEADERS = """/*
 /veri/*
   Cache-Control: public, max-age=3600
   Access-Control-Allow-Origin: *
+
+/logo/*
+  Cache-Control: public, max-age=604800
 """
 
 def build():
@@ -52,6 +56,10 @@ def build():
             koy(kaynak, f"veri/{ad}")
         else:
             eksik.append(ad)
+    if LOGO.exists():
+        (SITE/"logo").mkdir(exist_ok=True)
+        for f in sorted(LOGO.glob("*.webp")):
+            koy(f, f"logo/{f.name}")
     (SITE/"_headers").write_text(HEADERS, encoding="utf-8")
     yazilan.add("_headers")
 
