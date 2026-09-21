@@ -1,0 +1,6 @@
+node_modules/
+site/
+.wrangler/
+__pycache__/
+.venv/
+.claude/settings.local.json

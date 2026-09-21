@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sayfa bulunamadı — KKTC Futbol ELO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+:root{
+  --ground:#f8faf4; --surface:#ffffff; --surface-2:#e1e3dd;
+  --surface-3:#edefe9;
+  --ink:#191c19; --ink-2:#58413f; --ink-3:#8b716f;
+  --line:#dfbfbc; --line-2:#8b716f;
+  --accent:#7d1017; --accent-2:#9e2a2b; --accent-soft:#ffdad7; --on-accent:#ffffff;
+  --good:#194725; --good-soft:#bcefc0; --warn:#b07400; --bad:#ba1a1a; --bad-soft:#ffdad6;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4;
+  --radius:8px; --radius-sm:4px; --radius-full:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-nav:0 1px 8px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#111411; --surface:#191c19; --surface-2:#2e312d;
+    --surface-3:#23261f;
+    --ink:#e1e3dd; --ink-2:#d0c4c2; --ink-3:#a68d8b;
+    --line:#3a3330; --line-2:#55494a;
+    --accent:#ffb3ae; --accent-2:#9e2a2b; --accent-soft:#5f1214; --on-accent:#410004;
+    --good:#a0d3a5; --good-soft:#22502d; --warn:#d69a2a; --bad:#ffb4ab; --bad-soft:#93000a;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
+    --shadow:0 1px 3px rgba(0,0,0,.4); --shadow-nav:0 1px 8px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+--ground:#111411; --surface:#191c19; --surface-2:#2e312d;
+  --surface-3:#23261f;
+  --ink:#e1e3dd; --ink-2:#d0c4c2; --ink-3:#a68d8b;
+  --line:#3a3330; --line-2:#55494a;
+  --accent:#ffb3ae; --accent-2:#9e2a2b; --accent-soft:#5f1214; --on-accent:#410004;
+  --good:#a0d3a5; --good-soft:#22502d; --warn:#d69a2a; --bad:#ffb4ab; --bad-soft:#93000a;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
+  --shadow:0 1px 3px rgba(0,0,0,.4); --shadow-nav:0 1px 8px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:"Plus Jakarta Sans",system-ui,sans-serif;margin:0;text-wrap:balance;letter-spacing:-.02em}
+h1{font-size:clamp(30px,6vw,40px);font-weight:800;line-height:1.2}
+h2{font-size:22px;font-weight:700;line-height:1.36}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.num{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;
+  font-size:13px;font-weight:600}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;font-weight:700}
+/* header */
+header.top{background:var(--surface);box-shadow:var(--shadow)}
+.top-in{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 24px;
+  display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between}
+.lede{max-width:44ch;color:var(--ink-2);margin-top:10px;font-size:14.5px}
+.flagline{display:flex;gap:6px;align-items:center;margin-bottom:12px}
+.flagline i{display:block;width:26px;height:4px;border-radius:2px;background:var(--accent)}
+.ms{font-family:"Material Symbols Outlined";font-weight:400;font-style:normal;line-height:1;
+  letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;
+  -webkit-font-feature-settings:"liga";font-feature-settings:"liga"}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:26px}
+.stat{background:var(--surface);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
+.stat b{display:block;font-size:32px;font-weight:800;line-height:1.12;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums}
+.stat span{font-size:11px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;
+  font-family:"JetBrains Mono",monospace;font-weight:700}
+section{margin-top:44px}
+.sec-head{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.sec-head p{color:var(--ink-2);font-size:13.5px;max-width:56ch}
+h2{display:flex;align-items:center;gap:9px}
+.h2ic{font-size:22px;color:var(--accent);font-style:normal;flex:none}
+.sapma{font-weight:700}
+.sapma.iyi{color:var(--good)}
+.sapma.kotu{color:var(--bad)}
+.sapma.notr{color:var(--ink-3)}
+.panel{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.pad{padding:16px}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:none;background:var(--surface-2);color:var(--ink-2);
+  border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;
+  font-family:inherit;line-height:1.35}
+.chip:hover{background:var(--surface-3);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700;
+  box-shadow:var(--shadow)}
+.chip:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chip .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+/* table */
+.tbl-scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+thead tr{background:var(--surface-3)}
+th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  font-family:"JetBrains Mono",monospace;font-weight:700;padding:11px 10px}
+td{padding:10px;border-top:1px solid var(--surface-3)}
+tbody tr:hover{background:var(--surface-3)}
+tbody tr:first-child td{border-top:none}
+td.r,th.r{text-align:right}
+[hidden]{display:none !important}
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--surface) 90%,transparent);
+  backdrop-filter:saturate(1.4) blur(12px);box-shadow:var(--shadow-nav)}
+.nav-in{max-width:1080px;margin:0 auto;padding:0 20px;display:flex;align-items:center;
+  gap:20px;height:46px}
+.nav-brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;
+  letter-spacing:-.01em;white-space:nowrap;color:var(--accent);text-transform:uppercase}
+.nav-brand i{display:flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:var(--radius-sm);background:var(--accent);color:var(--on-accent);font-size:18px;font-style:normal}
+.nav-links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{color:var(--ink-2);text-decoration:none;font-size:12px;font-weight:500;white-space:nowrap;
+  padding:6px 10px;border-radius:var(--radius-sm);line-height:1.35}
+.nav-links a:hover{color:var(--ink);background:var(--surface-2)}
+.nav-links a[aria-current="true"]{color:var(--on-accent);background:var(--accent);font-weight:700}
+section[id]{scroll-margin-top:60px}
+@media (max-width:640px){.nav-brand{display:none}}
+
+.rank{color:var(--ink-3);width:34px}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);position:relative;min-width:60px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--ink-2)}
+tr.top .bar i{background:var(--accent)}
+.lig{font-size:10px;padding:3px 8px;border-radius:var(--radius-full);background:var(--surface-2);
+  color:var(--ink-2);white-space:nowrap;font-weight:700;font-family:"JetBrains Mono",monospace}
+.lig.sl{color:var(--accent);background:var(--accent-soft)}
+/* chart */
+.pickbox{max-height:120px;overflow-y:auto;border-radius:var(--radius-sm);
+  padding:10px;background:var(--surface-2);margin-bottom:14px}
+.chart-box{position:relative}
+svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line-2);
+  border-radius:8px;padding:8px 10px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.13);
+  min-width:150px;z-index:5}
+.tip b{font-family:"JetBrains Mono",monospace;font-size:12px;display:block;margin-bottom:5px;color:var(--ink-3);
+  letter-spacing:.06em;text-transform:uppercase}
+.tip .row{display:flex;justify-content:space-between;gap:14px}
+.tip .row span{display:flex;align-items:center;gap:6px}
+.tip .row i{width:8px;height:8px;border-radius:2px;display:block}
+/* predictor */
+.pred{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label.f{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;font-weight:700;margin-bottom:6px}
+select{width:100%;font-family:inherit;font-size:14px;font-weight:600;padding:10px;
+  border-radius:var(--radius-sm);border:none;background:var(--surface-2);color:var(--ink)}
+.probbar{display:flex;gap:2px;margin-top:6px}
+.probbar div{height:38px;display:flex;align-items:center;justify-content:center;font-size:13px;
+  font-family:"JetBrains Mono",monospace;font-weight:700;color:#fff;min-width:0;overflow:hidden}
+.probbar div:first-child{border-radius:7px 0 0 7px}
+.probbar div:last-child{border-radius:0 7px 7px 0}
+.legend3{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);margin-top:7px}
+.note{font-size:12.5px;color:var(--ink-3);margin-top:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+ul.caveat{margin:8px 0 0;padding-left:18px;color:var(--ink-2);font-size:13.5px}
+ul.caveat li{margin-bottom:5px}
+code{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-3);font-size:12.5px}
+a{color:var(--accent)}
+@media (max-width:720px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pred,.two{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>
+.dortyuzdort{max-width:1080px;margin:0 auto;padding:96px 20px;text-align:center}
+.dortyuzdort .kod{font-family:"JetBrains Mono",monospace;font-size:64px;font-weight:700;
+  color:var(--accent);line-height:1;letter-spacing:-.04em}
+.dortyuzdort h1{margin:18px 0 10px}
+.dortyuzdort p{color:var(--ink-2);max-width:46ch;margin:0 auto 24px}
+.dortyuzdort a{display:inline-flex;align-items:center;gap:8px;background:var(--accent);
+  color:var(--on-accent);text-decoration:none;font-weight:700;font-size:13px;
+  padding:10px 16px;border-radius:var(--radius-sm);box-shadow:var(--shadow)}
+</style>
+</head>
+<body>
+<div class="dortyuzdort">
+  <div class="kod">404</div>
+  <h1>Sayfa bulunamadı</h1>
+  <p>Aradığınız adres bu sitede yok. Reytingler, puan cetvelleri ve maç tahmini
+     ana sayfada tek akışta duruyor.</p>
+  <a href="/"><i class="ms">arrow_back</i>Ana sayfaya dön</a>
+</div>
+</body>
+</html>

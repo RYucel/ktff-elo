@@ -1,0 +1,16 @@
+{
+  "name": "ktff-elo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KKTC Futbol ELO — KTFF arşivinden kurulan ortak ELO reyting sitesi",
+  "scripts": {
+    "veri": "cd src && python build_dataset.py && python final_model.py && python analiz.py",
+    "build": "python src/site_build.py",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "tarama": "cd src && python tune.py"
+  },
+  "devDependencies": {
+    "wrangler": "^4.135.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ktff-elo",
+  "compatibility_date": "2026-09-21",
+
+  // Sunucu kodu yok: site tek bir statik HTML + veri dosyalarından ibaret.
+  // site/ klasörü `python src/site_build.py` ile out/ çıktılarından üretilir.
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

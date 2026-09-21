@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KKTC Futbol ELO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+:root{
+  --ground:#f8faf4; --surface:#ffffff; --surface-2:#e1e3dd;
+  --surface-3:#edefe9;
+  --ink:#191c19; --ink-2:#58413f; --ink-3:#8b716f;
+  --line:#dfbfbc; --line-2:#8b716f;
+  --accent:#7d1017; --accent-2:#9e2a2b; --accent-soft:#ffdad7; --on-accent:#ffffff;
+  --good:#194725; --good-soft:#bcefc0; --warn:#b07400; --bad:#ba1a1a; --bad-soft:#ffdad6;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4;
+  --radius:8px; --radius-sm:4px; --radius-full:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-nav:0 1px 8px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#111411; --surface:#191c19; --surface-2:#2e312d;
+    --surface-3:#23261f;
+    --ink:#e1e3dd; --ink-2:#d0c4c2; --ink-3:#a68d8b;
+    --line:#3a3330; --line-2:#55494a;
+    --accent:#ffb3ae; --accent-2:#9e2a2b; --accent-soft:#5f1214; --on-accent:#410004;
+    --good:#a0d3a5; --good-soft:#22502d; --warn:#d69a2a; --bad:#ffb4ab; --bad-soft:#93000a;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
+    --shadow:0 1px 3px rgba(0,0,0,.4); --shadow-nav:0 1px 8px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+--ground:#111411; --surface:#191c19; --surface-2:#2e312d;
+  --surface-3:#23261f;
+  --ink:#e1e3dd; --ink-2:#d0c4c2; --ink-3:#a68d8b;
+  --line:#3a3330; --line-2:#55494a;
+  --accent:#ffb3ae; --accent-2:#9e2a2b; --accent-soft:#5f1214; --on-accent:#410004;
+  --good:#a0d3a5; --good-soft:#22502d; --warn:#d69a2a; --bad:#ffb4ab; --bad-soft:#93000a;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
+  --shadow:0 1px 3px rgba(0,0,0,.4); --shadow-nav:0 1px 8px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:"Plus Jakarta Sans",system-ui,sans-serif;margin:0;text-wrap:balance;letter-spacing:-.02em}
+h1{font-size:clamp(30px,6vw,40px);font-weight:800;line-height:1.2}
+h2{font-size:22px;font-weight:700;line-height:1.36}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.num{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;
+  font-size:13px;font-weight:600}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;font-weight:700}
+/* header */
+header.top{background:var(--surface);box-shadow:var(--shadow)}
+.top-in{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 24px;
+  display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between}
+.lede{max-width:44ch;color:var(--ink-2);margin-top:10px;font-size:14.5px}
+.flagline{display:flex;gap:6px;align-items:center;margin-bottom:12px}
+.flagline i{display:block;width:26px;height:4px;border-radius:2px;background:var(--accent)}
+.ms{font-family:"Material Symbols Outlined";font-weight:400;font-style:normal;line-height:1;
+  letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;
+  -webkit-font-feature-settings:"liga";font-feature-settings:"liga"}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:26px}
+.stat{background:var(--surface);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
+.stat b{display:block;font-size:32px;font-weight:800;line-height:1.12;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums}
+.stat span{font-size:11px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;
+  font-family:"JetBrains Mono",monospace;font-weight:700}
+section{margin-top:44px}
+.sec-head{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.sec-head p{color:var(--ink-2);font-size:13.5px;max-width:56ch}
+h2{display:flex;align-items:center;gap:9px}
+.h2ic{font-size:22px;color:var(--accent);font-style:normal;flex:none}
+.sapma{font-weight:700}
+.sapma.iyi{color:var(--good)}
+.sapma.kotu{color:var(--bad)}
+.sapma.notr{color:var(--ink-3)}
+.panel{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.pad{padding:16px}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:none;background:var(--surface-2);color:var(--ink-2);
+  border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;
+  font-family:inherit;line-height:1.35}
+.chip:hover{background:var(--surface-3);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700;
+  box-shadow:var(--shadow)}
+.chip:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chip .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+/* table */
+.tbl-scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+thead tr{background:var(--surface-3)}
+th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  font-family:"JetBrains Mono",monospace;font-weight:700;padding:11px 10px}
+td{padding:10px;border-top:1px solid var(--surface-3)}
+tbody tr:hover{background:var(--surface-3)}
+tbody tr:first-child td{border-top:none}
+td.r,th.r{text-align:right}
+[hidden]{display:none !important}
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--surface) 90%,transparent);
+  backdrop-filter:saturate(1.4) blur(12px);box-shadow:var(--shadow-nav)}
+.nav-in{max-width:1080px;margin:0 auto;padding:0 20px;display:flex;align-items:center;
+  gap:20px;height:46px}
+.nav-brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;
+  letter-spacing:-.01em;white-space:nowrap;color:var(--accent);text-transform:uppercase}
+.nav-brand i{display:flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:var(--radius-sm);background:var(--accent);color:var(--on-accent);font-size:18px;font-style:normal}
+.nav-links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{color:var(--ink-2);text-decoration:none;font-size:12px;font-weight:500;white-space:nowrap;
+  padding:6px 10px;border-radius:var(--radius-sm);line-height:1.35}
+.nav-links a:hover{color:var(--ink);background:var(--surface-2)}
+.nav-links a[aria-current="true"]{color:var(--on-accent);background:var(--accent);font-weight:700}
+section[id]{scroll-margin-top:60px}
+@media (max-width:640px){.nav-brand{display:none}}
+
+.rank{color:var(--ink-3);width:34px}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);position:relative;min-width:60px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--ink-2)}
+tr.top .bar i{background:var(--accent)}
+.lig{font-size:10px;padding:3px 8px;border-radius:var(--radius-full);background:var(--surface-2);
+  color:var(--ink-2);white-space:nowrap;font-weight:700;font-family:"JetBrains Mono",monospace}
+.lig.sl{color:var(--accent);background:var(--accent-soft)}
+/* chart */
+.pickbox{max-height:120px;overflow-y:auto;border-radius:var(--radius-sm);
+  padding:10px;background:var(--surface-2);margin-bottom:14px}
+.chart-box{position:relative}
+svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line-2);
+  border-radius:8px;padding:8px 10px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.13);
+  min-width:150px;z-index:5}
+.tip b{font-family:"JetBrains Mono",monospace;font-size:12px;display:block;margin-bottom:5px;color:var(--ink-3);
+  letter-spacing:.06em;text-transform:uppercase}
+.tip .row{display:flex;justify-content:space-between;gap:14px}
+.tip .row span{display:flex;align-items:center;gap:6px}
+.tip .row i{width:8px;height:8px;border-radius:2px;display:block}
+/* predictor */
+.pred{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label.f{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;font-weight:700;margin-bottom:6px}
+select{width:100%;font-family:inherit;font-size:14px;font-weight:600;padding:10px;
+  border-radius:var(--radius-sm);border:none;background:var(--surface-2);color:var(--ink)}
+.probbar{display:flex;gap:2px;margin-top:6px}
+.probbar div{height:38px;display:flex;align-items:center;justify-content:center;font-size:13px;
+  font-family:"JetBrains Mono",monospace;font-weight:700;color:#fff;min-width:0;overflow:hidden}
+.probbar div:first-child{border-radius:7px 0 0 7px}
+.probbar div:last-child{border-radius:0 7px 7px 0}
+.legend3{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);margin-top:7px}
+.note{font-size:12.5px;color:var(--ink-3);margin-top:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+ul.caveat{margin:8px 0 0;padding-left:18px;color:var(--ink-2);font-size:13.5px}
+ul.caveat li{margin-bottom:5px}
+code{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-3);font-size:12.5px}
+a{color:var(--accent)}
+@media (max-width:720px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pred,.two{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div>
+      <div class="flagline"><i></i><span class="eyebrow">KTFF arşivi · 2011 – 2026</span></div>
+      <h1>KKTC Futbol ELO</h1>
+      <p class="lede">AKSA Süper Lig ve 1. Lig'in tüm arşiv sonuçlarından kurulan, gol farkı ağırlıklı ELO güç sıralaması. Reytingler ligler arası ortaktır: terfi ve küme düşme puanı sıfırlamaz.</p>
+    </div>
+    <div class="chips" style="align-self:flex-end">
+      <button class="chip" id="themeBtn" type="button" aria-pressed="false">Koyu / açık tema</button>
+    </div>
+  </div>
+</header>
+<nav class="nav" id="nav">
+  <div class="nav-in">
+    <span class="nav-brand"><i class="ms">insights</i>KKTC ELO</span>
+    <div class="nav-links">
+      <a href="#siralama">Sıralama</a>
+      <a href="#cetvel">Puan cetvelleri</a>
+      <a href="#evrim">ELO evrimi</a>
+      <a href="#tahmin">Tahmin</a>
+      <a href="#zirve">Zirve</a>
+      <a href="#yontem">Yöntem</a>
+    </div>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="stats" id="stats"></div>
+
+  <section id="siralama">
+    <div class="sec-head">
+      <h2><i class="ms h2ic">leaderboard</i>Güncel güç sıralaması</h2>
+      <p>20 Eylül 2026 itibarıyla. 1500 puan tarihsel ortalamadır; iki takım arasındaki 100 puanlık fark, tarafsız sahada yaklaşık %64 kazanma beklentisi demektir.</p>
+    </div>
+    <div class="chips" id="ligFilter" style="margin-bottom:10px"></div>
+    <div class="panel tbl-scroll">
+      <table id="rankTbl">
+        <thead><tr><th class="rank">#</th><th>Kulüp</th><th>Lig</th><th class="r">ELO</th><th style="width:34%">Güç</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="note" id="modelnot"></p>
+  </section>
+
+  <section id="cetvel">
+    <div class="sec-head">
+      <h2><i class="ms h2ic">table_chart</i>Puan cetvelleri</h2>
+      <p>Galibiyet 3, beraberlik 1 puan; sıralama puan → averaj → atılan gol. KTFF'nin ikili
+         averaj ve ceza puanı uygulamaları yansıtılmaz, 2011-13 arşiv tekrarları çıkarılmıştır.
+         <b>Tüm zamanlar</b> görünümü 15 yılın birikimidir — bugünkü güç için yukarıdaki ELO
+         sıralamasına bakın. Maç başına puan (P/M) sütunu birikimi orandan ayırır.
+         <b>xP</b>, maç öncesi ELO farkından modelin beklediği puandır;
+         <b>Sapma</b> gerçek puanın bundan ne kadar ayrıştığını gösterir. Olasılıklar
+         2013-14 sonrasına uydurulduğundan ilk iki sezonun xP değeri daha kabadır.</p>
+    </div>
+    <div class="chips" id="cetvelSezon" style="margin-bottom:8px"></div>
+    <div class="chips" id="cetvelLig" style="margin-bottom:10px"></div>
+    <div class="panel tbl-scroll">
+      <table id="puanTbl">
+        <thead><tr><th class="rank">#</th><th>Kulüp</th><th class="r">O</th><th class="r">G</th>
+        <th class="r">B</th><th class="r">M</th><th class="r">A</th><th class="r">Y</th>
+        <th class="r">Av</th><th class="r">P</th>
+        <th class="r" title="Beklenen puan: her maçta 3xP(galibiyet) + 1xP(beraberlik)">xP</th>
+        <th class="r" title="Gerçek puan eksi beklenen puan">Sapma</th>
+        <th class="r" id="thPM" title="Maç başına puan">P/M</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="note" id="cetvelNot"></p>
+  </section>
+
+  <section id="evrim">
+    <div class="sec-head">
+      <h2><i class="ms h2ic">show_chart</i>ELO evrimi</h2>
+      <p>Sezon sonu reytingleri. Çizgideki kopukluk, kulübün o sezon bu iki ligde oynamadığını gösterir. En fazla beş kulüp seçilebilir.</p>
+    </div>
+    <div class="panel pad">
+      <div class="pickbox"><div class="chips" id="teamPick"></div></div>
+      <div class="chart-box" id="chartBox">
+        <svg id="chart" viewBox="0 0 900 380" role="img" aria-label="Seçili kulüplerin sezon sonu ELO reytingleri"></svg>
+        <div class="tip" id="tip" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tahmin">
+    <div class="sec-head">
+      <h2><i class="ms h2ic">casino</i>Maç tahmini</h2>
+      <p>Güncel reytinglerden, 2013-14 sonrası tüm maçlara uydurulmuş sıralı lojistik modelle hesaplanır.</p>
+    </div>
+    <div class="panel pad">
+      <div class="pred">
+        <div><label class="f" for="homeSel">Ev sahibi</label><select id="homeSel"></select></div>
+        <div><label class="f" for="awaySel">Deplasman</label><select id="awaySel"></select></div>
+      </div>
+      <div class="chips" style="margin-top:12px"><button class="chip" id="neutral" type="button" aria-pressed="false">Tarafsız saha</button></div>
+      <div class="probbar" id="probbar" style="margin-top:14px"></div>
+      <div class="legend3" id="problegend"></div>
+      <p class="note" id="prednote"></p>
+    </div>
+  </section>
+
+  <section class="two" id="zirve">
+    <div>
+      <div class="sec-head"><h2><i class="ms h2ic">emoji_events</i>Zirve reytingler</h2></div>
+      <div class="panel tbl-scroll">
+        <table id="peakTbl"><thead><tr><th class="rank">#</th><th>Kulüp</th><th>Sezon</th><th class="r">Zirve ELO</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div>
+      <div class="sec-head"><h2><i class="ms h2ic">query_stats</i>Model karnesi</h2></div>
+      <div class="panel tbl-scroll">
+        <table id="modelTbl"><thead><tr><th>Model</th><th class="r">Log-loss</th><th class="r">Brier</th><th class="r">İsabet</th></tr></thead><tbody></tbody></table>
+      </div>
+      <p class="note">2020-21 sonrası 2.401 maç üzerinde, zaman-dışı test. Düşük log-loss daha iyidir.</p>
+    </div>
+  </section>
+
+  <section id="yontem">
+    <div class="sec-head"><h2><i class="ms h2ic">info</i>Yöntem ve veri notları</h2></div>
+    <div class="panel pad">
+      <p style="font-size:14px">Her maçta ev sahibinin reytingi <code>R' = R + K · G · (S − B)</code> ile güncellenir. <code>K = 40</code>, <code>G</code> gol farkı çarpanıdır (1 / 1,5 / (11+fark)/8), <code>B</code> ise ev avantajı eklenmiş beklenen skordur. Sezon başında tüm reytingler ortalamaya %25 oranında çekilir; lige yeni giren kulüp, ligin o anki ortalamasının 40 puan altından başlar. Süper Lig ile 1. Lig arasına 120 puanlık başlangıç farkı konur, sonrası tamamen sonuçlardan gelir.</p>
+      <ul class="caveat">
+        <li><b>Ev avantajı:</b> veriden ölçülen değer <b>+57,5 ELO</b>. Ev sahibi maçların %45,9'unu kazanıyor, %20,6'sı berabere bitiyor.</li>
+        <li><b>2011-13 arşiv tekrarı:</b> KTFF arşivinde bu iki sezonda aynı eşleşme ikinci kez listeleniyor (70 kayıt). Çift devreli ligde her ev-deplasman çifti bir kez oynandığı için bu kayıtlar işaretlenip modelden çıkarıldı.</li>
+        <li><b>2020-21 sezonu yok:</b> pandemi nedeniyle oynanmadı; 2019-20 de yarıda kesildi.</li>
+        <li><b>Hükmen sonuçlar</b> tabloda yazan skorla işlenir; A2 ve U17 ligleri, kupa maçları kapsam dışıdır.</li>
+        <li><b>Kulüp adları</b> sponsor ekleri ayıklanarak birleştirildi (Yonpaş Dumlupınar → Dumlupınar, GAÜ Çetinkaya → Çetinkaya, China Bazaar Gençlik Gücü → Gençlik Gücü gibi).</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    Kaynak: Kıbrıs Türk Futbol Federasyonu maç arşivi (ktff.org). 5.962 lig maçı, 54 kulüp, 15 sezon.
+  </footer>
+</div>
+<script>
+const DATA = {"meta": {"mac": 5962, "kulup": 54, "ilk": "2011-09-24", "son": "2026-09-20", "params": {"k": 40, "hfa": 60, "gd_mode": "wfe", "regress": 0.25, "tier_gap": 120, "new_penalty": 40, "base": 1500.0, "scale": 400.0, "gd_two": 1.5, "gd_num": 11.0, "gd_den": 8.0}, "logit": {"b": 0.004981327104569071, "c1": -0.7622861573760074, "c2": 0.1894642933753673}, "ev_avantaji": 57.5, "holdout": [{"model": "Gol farkı ağırlıklı (nihai)", "logloss": 0.9588032346135288, "brier": 0.5680963448465564, "isabet": 0.550603915035402, "test_mac": 2401}, {"model": "Klasik ELO (sabit K)", "logloss": 0.9636840115854047, "brier": 0.5715660971788479, "isabet": 0.5422740524781341, "test_mac": 2401}, {"model": "Sezon çekmesi yok", "logloss": 0.9622748926360682, "brier": 0.5703387623058771, "isabet": 0.5481049562682215, "test_mac": 2401}, {"model": "Taban oran (referans)", "logloss": 1.049572458530851, "brier": 0.6354956711692216, "isabet": 0.4523115368596418, "test_mac": 2401}]}, "siralama": [{"takim": "Gençlik Gücü TSK", "elo": 1705.4, "lig": "Süper Lig", "sira": 1}, {"takim": "Doğan Türk Birliği", "elo": 1692.8, "lig": "Süper Lig", "sira": 2}, {"takim": "Cihangir GSK", "elo": 1687.2, "lig": "Süper Lig", "sira": 3}, {"takim": "Mağusa Türk Gücü", "elo": 1631.1, "lig": "Süper Lig", "sira": 4}, {"takim": "Değirmenlik SK", "elo": 1612.4, "lig": "Süper Lig", "sira": 5}, {"takim": "Aslanköy GSD", "elo": 1537.9, "lig": "Süper Lig", "sira": 6}, {"takim": "Dumlupınar TSK", "elo": 1512.1, "lig": "Süper Lig", "sira": 7}, {"takim": "L. Gençler Birliği SK", "elo": 1501.1, "lig": "1. Lig", "sira": 8}, {"takim": "Karaoğlanoğlu SK", "elo": 1489.1, "lig": "1. Lig", "sira": 9}, {"takim": "Mesarya SK", "elo": 1482.5, "lig": "Süper Lig", "sira": 10}, {"takim": "Lapta Türk Birliği SK", "elo": 1482.3, "lig": "1. Lig", "sira": 11}, {"takim": "Karşıyaka SK", "elo": 1471.9, "lig": "Süper Lig", "sira": 12}, {"takim": "Göçmenköy İYSK", "elo": 1471.4, "lig": "1. Lig", "sira": 13}, {"takim": "Türk Ocağı Limasol SK", "elo": 1461.4, "lig": "1. Lig", "sira": 14}, {"takim": "Dikmen Gücü SK", "elo": 1448.3, "lig": "1. Lig", "sira": 15}, {"takim": "Lefke TSK", "elo": 1447.5, "lig": "1. Lig", "sira": 16}, {"takim": "Alsancak Yeşilova SK", "elo": 1442.2, "lig": "Süper Lig", "sira": 17}, {"takim": "Esentepe KSKK", "elo": 1434.3, "lig": "Süper Lig", "sira": 18}, {"takim": "Düzkaya KOSK", "elo": 1429.1, "lig": "1. Lig", "sira": 19}, {"takim": "Küçük Kaymaklı TSK", "elo": 1425.8, "lig": "Süper Lig", "sira": 20}, {"takim": "M. Karşıyaka ASK", "elo": 1425.3, "lig": "Aktif değil", "sira": 21}, {"takim": "M. Hacıali Yılmazköy SK", "elo": 1420.9, "lig": "1. Lig", "sira": 22}, {"takim": "Akova Vuda TÇBSK", "elo": 1419.8, "lig": "Aktif değil", "sira": 23}, {"takim": "Çetinkaya TSK", "elo": 1419.0, "lig": "Süper Lig", "sira": 24}, {"takim": "Binatlı YSK", "elo": 1418.8, "lig": "Aktif değil", "sira": 25}, {"takim": "Mormenekşe GBSK", "elo": 1414.3, "lig": "1. Lig", "sira": 26}, {"takim": "Serdarlı GB", "elo": 1411.2, "lig": "Aktif değil", "sira": 27}, {"takim": "Baf Ülkü Yurdu", "elo": 1407.7, "lig": "Süper Lig", "sira": 28}, {"takim": "Denizli SK", "elo": 1406.7, "lig": "Aktif değil", "sira": 29}, {"takim": "Bellapais Tatlısu HOSK", "elo": 1405.3, "lig": "Aktif değil", "sira": 30}, {"takim": "Türkmenköy ASK", "elo": 1400.5, "lig": "Aktif değil", "sira": 31}, {"takim": "Akıncılar GSK", "elo": 1394.0, "lig": "Aktif değil", "sira": 32}, {"takim": "Mehmetçik TÇBSK", "elo": 1393.7, "lig": "Aktif değil", "sira": 33}, {"takim": "Yalova SK", "elo": 1389.7, "lig": "Aktif değil", "sira": 34}, {"takim": "Yenicami AK", "elo": 1384.2, "lig": "Süper Lig", "sira": 35}, {"takim": "Doğancı SK", "elo": 1376.9, "lig": "Aktif değil", "sira": 36}, {"takim": "Akdoğan SK", "elo": 1374.9, "lig": "1. Lig", "sira": 37}, {"takim": "Kozanköy KSK", "elo": 1374.6, "lig": "Aktif değil", "sira": 38}, {"takim": "Dörtyol SK", "elo": 1366.9, "lig": "Aktif değil", "sira": 39}, {"takim": "Ozanköy SK", "elo": 1352.2, "lig": "Aktif değil", "sira": 40}, {"takim": "Bostancı Bağcıl SK", "elo": 1350.6, "lig": "Aktif değil", "sira": 41}, {"takim": "Görneç KSK", "elo": 1331.2, "lig": "Aktif değil", "sira": 42}, {"takim": "İncirli SK", "elo": 1323.1, "lig": "Aktif değil", "sira": 43}, {"takim": "Geçitkale GSK", "elo": 1314.9, "lig": "1. Lig", "sira": 44}, {"takim": "Girne Halk Evi SK", "elo": 1310.7, "lig": "Aktif değil", "sira": 45}, {"takim": "Dipkarpaz SK", "elo": 1310.4, "lig": "Aktif değil", "sira": 46}, {"takim": "Gönyeli SK", "elo": 1307.1, "lig": "1. Lig", "sira": 47}, {"takim": "Yenierenköy TSK", "elo": 1304.2, "lig": "Aktif değil", "sira": 48}, {"takim": "Maraş GSK", "elo": 1299.0, "lig": "1. Lig", "sira": 49}, {"takim": "Yeniboğaziçi DSK", "elo": 1281.1, "lig": "1. Lig", "sira": 50}, {"takim": "Vadili TÇBSK", "elo": 1238.9, "lig": "Aktif değil", "sira": 51}, {"takim": "Kaplıca Karadeniz 61 SK", "elo": 1195.2, "lig": "Aktif değil", "sira": 52}, {"takim": "Hamitköy ŞHSK", "elo": 1190.6, "lig": "Aktif değil", "sira": 53}, {"takim": "Çanakkale TSK", "elo": 1168.8, "lig": "Aktif değil", "sira": 54}], "zirve": [{"takim": "Mağusa Türk Gücü", "elo": 1895.9, "tarih": "2024-04-13", "sezon": "2023-2024"}, {"takim": "Cihangir GSK", "elo": 1837.6, "tarih": "2024-03-30", "sezon": "2023-2024"}, {"takim": "Çetinkaya TSK", "elo": 1823.7, "tarih": "2013-04-26", "sezon": "2012-2013"}, {"takim": "Yenicami AK", "elo": 1812.7, "tarih": "2015-02-08", "sezon": "2014-2015"}, {"takim": "Doğan Türk Birliği", "elo": 1794.3, "tarih": "2025-04-26", "sezon": "2024-2025"}, {"takim": "Gençlik Gücü TSK", "elo": 1790.7, "tarih": "2026-05-09", "sezon": "2025-2026"}, {"takim": "Değirmenlik SK", "elo": 1751.4, "tarih": "2024-12-29", "sezon": "2024-2025"}, {"takim": "Küçük Kaymaklı TSK", "elo": 1743.4, "tarih": "2014-04-19", "sezon": "2013-2014"}, {"takim": "Alsancak Yeşilova SK", "elo": 1707.6, "tarih": "2020-07-22", "sezon": "2019-2020"}, {"takim": "Mesarya SK", "elo": 1705.3, "tarih": "2023-05-07", "sezon": "2022-2023"}, {"takim": "Dumlupınar TSK", "elo": 1695.8, "tarih": "2023-12-03", "sezon": "2023-2024"}, {"takim": "Türk Ocağı Limasol SK", "elo": 1673.4, "tarih": "2015-04-05", "sezon": "2014-2015"}, {"takim": "Lefke TSK", "elo": 1672.8, "tarih": "2014-03-08", "sezon": "2013-2014"}, {"takim": "Binatlı YSK", "elo": 1671.8, "tarih": "2016-02-07", "sezon": "2015-2016"}, {"takim": "L. Gençler Birliği SK", "elo": 1640.3, "tarih": "2017-12-16", "sezon": "2017-2018"}, {"takim": "Karşıyaka SK", "elo": 1628.5, "tarih": "2024-04-27", "sezon": "2023-2024"}, {"takim": "Mormenekşe GBSK", "elo": 1627.0, "tarih": "2015-04-11", "sezon": "2014-2015"}, {"takim": "Baf Ülkü Yurdu", "elo": 1616.6, "tarih": "2018-11-17", "sezon": "2018-2019"}, {"takim": "Gönyeli SK", "elo": 1615.4, "tarih": "2022-02-06", "sezon": "2021-2022"}, {"takim": "Serdarlı GB", "elo": 1612.2, "tarih": "2012-04-15", "sezon": "2011-2012"}], "sezonlar": ["2011-2012", "2012-2013", "2013-2014", "2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019", "2019-2020", "2021-2022", "2022-2023", "2023-2024", "2024-2025", "2025-2026", "2026-2027"], "tarihce": {"Akdoğan SK": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1374.9], "Akova Vuda TÇBSK": [null, null, null, null, null, 1395.9, 1359.9, 1500.5, null, null, null, null, null, null, null], "Akıncılar GSK": [null, null, 1360.5, 1100.5, null, null, null, null, null, null, null, null, null, null, null], "Alsancak Yeşilova SK": [1254.9, null, null, null, null, 1549.4, 1600.4, 1618.2, 1707.6, 1563.6, 1539.9, 1456.3, 1576.8, 1443.8, 1442.2], "Aslanköy GSD": [null, null, null, null, null, null, null, null, null, null, null, null, null, 1565.8, 1537.9], "Baf Ülkü Yurdu": [1258.8, null, 1307.9, null, 1442.7, 1444.2, 1578.4, 1414.8, 1526.8, 1346.3, 1331.9, 1179.2, null, 1498.1, 1407.7], "Bellapais Tatlısu HOSK": [1258.0, 1340.2, null, null, null, null, null, null, null, null, null, null, null, null, null], "Binatlı YSK": [1404.6, 1378.9, 1281.3, 1448.3, 1512.6, 1481.9, 1520.7, 1366.2, 1454.0, 1277.7, 1365.2, 1415.9, 1519.1, 1421.8, null], "Bostancı Bağcıl SK": [1507.0, 1431.6, 1480.8, 1468.4, 1226.7, null, 1304.9, 1335.3, 1299.9, 1167.3, null, null, null, null, null], "Cihangir GSK": [1509.8, 1507.8, 1485.9, 1529.4, 1513.8, 1620.5, 1575.6, 1407.0, 1377.8, 1592.8, 1636.6, 1731.5, 1635.7, 1785.3, 1687.2], "Denizli SK": [null, null, null, 1299.5, 1400.8, null, null, null, null, null, null, null, null, null, null], "Değirmenlik SK": [null, null, 1305.4, 1493.6, 1404.4, 1311.9, 1317.5, 1225.8, null, 1416.4, 1605.3, 1737.2, 1529.7, 1607.2, 1612.4], "Dikmen Gücü SK": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1448.3], "Dipkarpaz SK": [null, null, null, null, null, 1102.2, null, null, null, null, null, null, 1234.1, null, null], "Doğan Türk Birliği": [1433.9, 1534.2, 1530.3, 1544.0, 1452.0, 1668.7, 1615.9, 1619.3, 1605.0, 1576.9, 1719.5, 1588.2, 1781.8, 1765.3, 1692.8], "Doğancı SK": [null, null, null, null, null, null, 1392.0, 1222.5, 1236.0, null, null, null, null, null, null], "Dumlupınar TSK": [1321.6, 1366.0, 1367.8, 1395.2, 1580.5, 1258.1, 1421.0, 1379.9, 1568.3, 1597.1, 1562.3, 1479.3, 1448.8, 1515.3, 1512.1], "Dörtyol SK": [null, null, null, null, null, null, null, null, 1359.2, 1307.0, 1278.3, null, null, null, null], "Düzkaya KOSK": [1365.0, 1392.6, 1298.0, 1341.4, 1315.7, 1367.0, null, 1541.9, 1395.6, 1398.7, 1428.3, 1342.4, 1373.4, 1510.8, 1429.1], "Esentepe KSKK": [1388.6, 1347.6, 1467.1, 1372.7, 1272.2, null, 1363.5, 1401.0, 1475.9, 1461.1, 1564.1, 1437.2, 1492.9, 1454.2, 1434.3], "Gençlik Gücü TSK": [1562.9, 1488.7, 1121.7, 1256.5, 1499.8, 1459.4, 1398.9, 1469.3, 1264.7, 1532.6, 1402.3, 1437.7, 1563.1, 1790.7, 1705.4], "Geçitkale GSK": [null, null, null, 1075.6, null, null, null, null, null, null, null, 1311.1, 1381.1, 1379.1, 1314.9], "Girne Halk Evi SK": [null, null, null, null, 1348.4, null, 1475.3, 1268.2, 1543.7, 1133.4, 1314.7, 1177.2, null, null, null], "Gönyeli SK": [1163.9, 1352.6, 1485.5, 1158.6, 1262.5, null, 1492.9, 1487.3, 1502.2, 1558.0, 1217.9, 1439.1, 1440.2, 1256.3, 1307.1], "Görneç KSK": [1425.5, 1362.0, null, 1386.6, 1259.2, null, 1158.7, null, 1313.9, 1085.4, null, null, null, null, null], "Göçmenköy İYSK": [1294.1, 1196.2, 1312.4, 1354.1, 1306.5, 1457.1, 1316.0, 1450.5, 1484.9, 1487.0, 1442.3, 1611.0, 1468.7, 1407.6, 1471.4], "Hamitköy ŞHSK": [1508.0, 1431.5, 1381.4, 1413.2, 1320.8, 1405.4, 1412.5, 1469.4, 1420.9, 1441.0, 1358.8, 1366.8, 1360.8, 1117.5, null], "Kaplıca Karadeniz 61 SK": [null, null, null, null, null, null, null, null, null, null, null, null, null, 1123.7, null], "Karaoğlanoğlu SK": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1489.1], "Karşıyaka SK": [null, null, null, null, null, null, null, null, null, null, 1505.6, 1593.5, 1412.8, 1399.7, 1471.9], "Kozanköy KSK": [null, null, null, null, null, null, null, null, null, null, null, null, 1509.0, 1362.9, null], "Küçük Kaymaklı TSK": [1504.8, 1544.4, 1743.4, 1679.4, 1596.3, 1626.4, 1463.3, 1446.9, 1395.5, 1515.3, 1454.7, 1439.8, 1535.8, 1453.9, 1425.8], "L. Gençler Birliği SK": [null, 1421.2, 1417.4, 1474.7, 1598.3, 1601.1, 1446.6, 1274.4, 1337.0, 1448.1, 1422.8, 1530.7, 1271.1, 1479.5, 1501.1], "Lapta Türk Birliği SK": [1410.4, 1365.0, 1410.6, 1128.5, 1183.5, null, 1281.9, null, 1295.2, null, 1381.4, 1294.6, 1293.5, 1504.8, 1482.3], "Lefke TSK": [1429.2, 1469.6, 1603.5, 1502.9, 1543.3, 1484.4, 1584.2, 1519.1, 1462.4, 1542.4, 1481.6, 1544.7, 1503.6, 1433.9, 1447.5], "M. Hacıali Yılmazköy SK": [null, null, null, null, null, null, null, null, null, null, 1271.8, 1406.2, 1354.1, 1400.3, 1420.9], "M. Karşıyaka ASK": [null, null, null, null, 1228.3, null, null, 1290.2, 1312.2, 1482.0, null, null, null, null, null], "Maraş GSK": [null, null, null, null, null, 1383.8, 1396.7, 1383.1, 1345.7, 1327.4, 1390.7, 1322.2, 1347.7, 1309.4, 1299.0], "Mağusa Türk Gücü": [1577.6, 1506.6, 1485.8, 1555.4, 1622.1, 1446.9, 1526.6, 1796.0, 1851.2, 1789.3, 1874.7, 1874.0, 1834.8, 1666.6, 1631.1], "Mehmetçik TÇBSK": [null, null, null, null, null, 1418.8, 1272.6, null, null, null, null, null, null, null, null], "Mesarya SK": [null, null, null, null, null, 1373.9, null, 1390.5, 1630.9, 1613.1, 1705.3, 1435.2, 1431.8, 1506.7, 1482.5], "Mormenekşe GBSK": [1427.9, 1498.9, 1460.4, 1600.3, 1427.9, 1298.5, 1393.2, 1349.7, 1312.5, 1317.1, 1360.8, 1391.7, 1515.6, 1397.3, 1414.3], "Ozanköy SK": [1370.9, 1367.1, 1288.9, null, null, null, 1270.1, 1544.2, 1056.9, null, null, 1275.6, null, null, null], "Serdarlı GB": [1599.5, 1358.2, 1490.0, 1508.5, null, null, null, null, null, null, null, null, null, null, null], "Türk Ocağı Limasol SK": [1299.2, 1194.1, 1476.9, 1646.6, 1633.7, 1589.9, 1542.7, 1527.7, 1550.5, 1413.5, 1354.1, 1089.5, 1487.5, 1402.8, 1461.4], "Türkmenköy ASK": [1387.5, 1343.8, 1206.9, null, null, null, null, null, null, null, null, null, null, null, null], "Vadili TÇBSK": [null, 1101.1, null, null, null, null, null, null, null, null, null, null, 1107.0, null, null], "Yalova SK": [null, 1452.2, 1330.6, 1494.8, 1517.9, 1538.0, 1346.8, 1340.8, 1354.4, 1317.9, 1398.4, 1410.5, 1315.9, 1383.0, null], "Yeniboğaziçi DSK": [1304.1, 1424.8, 1323.8, 1439.0, 1330.9, 1439.3, 1292.6, 1162.1, null, 1354.4, 1535.4, 1252.9, 1529.1, 1272.8, 1281.1], "Yenicami AK": [1482.1, 1656.0, 1751.4, 1796.9, 1594.2, 1751.2, 1650.7, 1804.6, 1600.9, 1683.7, 1562.8, 1436.6, 1369.5, 1459.8, 1384.2], "Yenierenköy TSK": [null, null, null, null, null, null, null, null, null, null, 1080.2, null, null, null, null], "Çanakkale TSK": [1153.7, null, null, null, null, null, 1343.4, 1254.8, 1207.9, 1091.2, null, 1416.4, 982.4, null, null], "Çetinkaya TSK": [1677.9, 1823.7, 1563.8, 1441.0, 1663.3, 1474.3, 1602.7, 1527.9, 1368.7, 1636.6, 1425.9, 1594.8, 1560.3, 1500.3, 1419.0], "İncirli SK": [null, null, null, null, null, null, null, null, null, 1268.6, 1140.1, null, null, null, null]}, "sampiyonlar": [{"sezon": "2011-2012", "lig": "1. Lig", "sampiyon": "Gençlik Gücü TSK", "puan": 57, "elo_bir": "Serdarlı GB", "ayni": false}, {"sezon": "2011-2012", "lig": "Süper Lig", "sampiyon": "Çetinkaya TSK", "puan": 61, "elo_bir": "Çetinkaya TSK", "ayni": true}, {"sezon": "2012-2013", "lig": "1. Lig", "sampiyon": "Yeniboğaziçi DSK", "puan": 45, "elo_bir": "Mormenekşe GBSK", "ayni": false}, {"sezon": "2012-2013", "lig": "Süper Lig", "sampiyon": "Çetinkaya TSK", "puan": 67, "elo_bir": "Çetinkaya TSK", "ayni": true}, {"sezon": "2013-2014", "lig": "1. Lig", "sampiyon": "Gönyeli SK", "puan": 55, "elo_bir": "Gönyeli SK", "ayni": true}, {"sezon": "2013-2014", "lig": "Süper Lig", "sampiyon": "Yenicami AK", "puan": 63, "elo_bir": "Yenicami AK", "ayni": true}, {"sezon": "2014-2015", "lig": "1. Lig", "sampiyon": "Türk Ocağı Limasol SK", "puan": 64, "elo_bir": "Türk Ocağı Limasol SK", "ayni": true}, {"sezon": "2014-2015", "lig": "Süper Lig", "sampiyon": "Yenicami AK", "puan": 68, "elo_bir": "Yenicami AK", "ayni": true}, {"sezon": "2015-2016", "lig": "1. Lig", "sampiyon": "Dumlupınar TSK", "puan": 60, "elo_bir": "Dumlupınar TSK", "ayni": true}, {"sezon": "2015-2016", "lig": "Süper Lig", "sampiyon": "Mağusa Türk Gücü", "puan": 50, "elo_bir": "Çetinkaya TSK", "ayni": false}, {"sezon": "2016-2017", "lig": "1. Lig", "sampiyon": "Alsancak Yeşilova SK", "puan": 40, "elo_bir": "Alsancak Yeşilova SK", "ayni": true}, {"sezon": "2016-2017", "lig": "Süper Lig", "sampiyon": "Yenicami AK", "puan": 72, "elo_bir": "Yenicami AK", "ayni": true}, {"sezon": "2017-2018", "lig": "1. Lig", "sampiyon": "Gönyeli SK", "puan": 62, "elo_bir": "Gönyeli SK", "ayni": true}, {"sezon": "2017-2018", "lig": "Süper Lig", "sampiyon": "Yenicami AK", "puan": 61, "elo_bir": "Yenicami AK", "ayni": true}, {"sezon": "2018-2019", "lig": "1. Lig", "sampiyon": "Düzkaya KOSK", "puan": 62, "elo_bir": "Ozanköy SK", "ayni": false}, {"sezon": "2018-2019", "lig": "Süper Lig", "sampiyon": "Mağusa Türk Gücü", "puan": 75, "elo_bir": "Yenicami AK", "ayni": false}, {"sezon": "2019-2020", "lig": "1. Lig", "sampiyon": "Mesarya SK", "puan": 67, "elo_bir": "Mesarya SK", "ayni": true}, {"sezon": "2019-2020", "lig": "Süper Lig", "sampiyon": "Mağusa Türk Gücü", "puan": 76, "elo_bir": "Mağusa Türk Gücü", "ayni": true}, {"sezon": "2021-2022", "lig": "1. Lig", "sampiyon": "Çetinkaya TSK", "puan": 68, "elo_bir": "Çetinkaya TSK", "ayni": true}, {"sezon": "2021-2022", "lig": "Süper Lig", "sampiyon": "Mağusa Türk Gücü", "puan": 69, "elo_bir": "Mağusa Türk Gücü", "ayni": true}, {"sezon": "2022-2023", "lig": "1. Lig", "sampiyon": "Karşıyaka SK", "puan": 63, "elo_bir": "Esentepe KSKK", "ayni": false}, {"sezon": "2022-2023", "lig": "Süper Lig", "sampiyon": "Mağusa Türk Gücü", "puan": 80, "elo_bir": "Mağusa Türk Gücü", "ayni": true}, {"sezon": "2023-2024", "lig": "1. Lig", "sampiyon": "Değirmenlik SK", "puan": 79, "elo_bir": "Değirmenlik SK", "ayni": true}, {"sezon": "2023-2024", "lig": "Süper Lig", "sampiyon": "Mağusa Türk Gücü", "puan": 80, "elo_bir": "Mağusa Türk Gücü", "ayni": true}, {"sezon": "2024-2025", "lig": "1. Lig", "sampiyon": "Mormenekşe GBSK", "puan": 64, "elo_bir": "Küçük Kaymaklı TSK", "ayni": false}, {"sezon": "2024-2025", "lig": "Süper Lig", "sampiyon": "Doğan Türk Birliği", "puan": 70, "elo_bir": "Mağusa Türk Gücü", "ayni": false}, {"sezon": "2025-2026", "lig": "1. Lig", "sampiyon": "Baf Ülkü Yurdu", "puan": 59, "elo_bir": "Değirmenlik SK", "ayni": false}, {"sezon": "2025-2026", "lig": "Süper Lig", "sampiyon": "Cihangir GSK", "puan": 73, "elo_bir": "Gençlik Gücü TSK", "ayni": false}], "ev_avantaji_sezon": {"2011-2012": 0.434, "2012-2013": 0.473, "2013-2014": 0.464, "2014-2015": 0.481, "2015-2016": 0.451, "2016-2017": 0.488, "2017-2018": 0.477, "2018-2019": 0.473, "2019-2020": 0.439, "2021-2022": 0.441, "2022-2023": 0.454, "2023-2024": 0.45, "2024-2025": 0.47, "2025-2026": 0.442, "2026-2027": 0.556}, "puan_basliklar": ["Kulüp", "O", "G", "B", "M", "A", "Y", "Av", "P", "xP", "Sapma"], "puan_sezon": {"2011-2012|1. Lig": [["Gençlik Gücü TSK", 26, 18, 3, 5, 81, 27, 54, 57, 49.8, 7.2], ["Serdarlı GB", 26, 15, 9, 2, 61, 17, 44, 54, 43.7, 10.3], ["Mormenekşe GBSK", 26, 15, 4, 7, 52, 35, 17, 49, 42.8, 6.2], ["Hamitköy ŞHSK", 26, 13, 6, 7, 52, 30, 22, 45, 39.6, 5.4], ["Görneç KSK", 26, 11, 8, 7, 43, 42, 1, 41, 39.8, 1.2], ["Türkmenköy ASK", 26, 8, 14, 4, 28, 21, 7, 38, 40.1, -2.1], ["Esentepe KSKK", 26, 10, 6, 10, 52, 36, 16, 36, 38.5, -2.5], ["Binatlı YSK", 26, 8, 10, 8, 36, 45, -9, 34, 34.6, -0.6], ["Ozanköy SK", 26, 9, 5, 12, 42, 54, -12, 32, 32.8, -0.8], ["Yeniboğaziçi DSK", 26, 7, 8, 11, 37, 53, -16, 29, 32.5, -3.5], ["Dumlupınar TSK", 26, 6, 8, 12, 32, 48, -16, 26, 30.5, -4.5], ["Alsancak Yeşilova SK", 26, 5, 9, 12, 30, 52, -22, 24, 31.8, -7.8], ["Baf Ülkü Yurdu", 26, 4, 7, 15, 33, 48, -15, 19, 29.1, -10.1], ["Çanakkale TSK", 26, 3, 3, 20, 14, 85, -71, 12, 21.9, -9.9]], "2011-2012|Süper Lig": [["Çetinkaya TSK", 26, 19, 4, 3, 61, 21, 40, 61, 52.5, 8.5], ["Mağusa Türk Gücü", 26, 15, 7, 4, 54, 29, 25, 52, 44.3, 7.7], ["Küçük Kaymaklı TSK", 26, 16, 3, 7, 50, 30, 20, 51, 48.2, 2.8], ["Yenicami AK", 26, 15, 2, 9, 62, 35, 27, 47, 42.5, 4.5], ["Cihangir GSK", 26, 14, 3, 9, 46, 46, 0, 45, 35.6, 9.4], ["Lefke TSK", 26, 11, 6, 9, 45, 36, 9, 39, 36.8, 2.2], ["Doğan Türk Birliği", 26, 11, 6, 9, 54, 47, 7, 39, 38.6, 0.4], ["Bostancı Bağcıl SK", 26, 9, 10, 7, 40, 32, 8, 37, 36.4, 0.6], ["Lapta Türk Birliği SK", 26, 9, 6, 11, 33, 42, -9, 33, 34.6, -1.6], ["Türk Ocağı Limasol SK", 26, 6, 8, 12, 41, 63, -22, 26, 30.4, -4.4], ["Düzkaya KOSK", 26, 6, 6, 14, 35, 52, -17, 24, 28.1, -4.1], ["Göçmenköy İYSK", 26, 6, 5, 15, 26, 53, -27, 23, 27.0, -4.0], ["Bellapais Tatlısu HOSK", 26, 6, 3, 17, 34, 57, -23, 21, 30.2, -9.2], ["Gönyeli SK", 26, 3, 3, 20, 29, 67, -38, 12, 23.4, -11.4]], "2012-2013|1. Lig": [["Yeniboğaziçi DSK", 26, 12, 9, 5, 39, 26, 13, 45, 40.9, 4.1], ["Yalova SK", 26, 13, 5, 8, 52, 31, 21, 44, 44.8, -0.8], ["Mormenekşe GBSK", 26, 12, 7, 7, 48, 30, 18, 43, 42.3, 0.7], ["Ozanköy SK", 26, 13, 3, 10, 53, 47, 6, 42, 39.8, 2.2], ["Düzkaya KOSK", 26, 12, 6, 8, 46, 40, 6, 42, 39.8, 2.2], ["L. Gençler Birliği SK", 26, 11, 7, 8, 44, 38, 6, 40, 38.2, 1.8], ["Türkmenköy ASK", 26, 10, 6, 10, 29, 35, -6, 36, 37.1, -1.1], ["Gönyeli SK", 26, 9, 8, 9, 51, 35, 16, 35, 32.4, 2.6], ["Görneç KSK", 26, 9, 6, 11, 47, 48, -1, 33, 36.5, -3.5], ["Dumlupınar TSK", 26, 10, 3, 13, 41, 47, -6, 33, 30.4, 2.6], ["Binatlı YSK", 26, 8, 9, 9, 29, 46, -17, 33, 31.5, 1.5], ["Esentepe KSKK", 26, 8, 8, 10, 42, 42, 0, 32, 36.8, -4.8], ["Bellapais Tatlısu HOSK", 26, 8, 7, 11, 43, 50, -7, 31, 31.3, -0.3], ["Vadili TÇBSK", 26, 2, 6, 18, 25, 74, -49, 12, 24.7, -12.7]], "2012-2013|Süper Lig": [["Çetinkaya TSK", 26, 21, 4, 1, 81, 20, 61, 67, 55.3, 11.7], ["Yenicami AK", 26, 18, 4, 4, 56, 26, 30, 58, 46.1, 11.9], ["Küçük Kaymaklı TSK", 26, 15, 4, 7, 58, 26, 32, 49, 47.1, 1.9], ["Doğan Türk Birliği", 26, 12, 5, 9, 52, 45, 7, 41, 34.7, 6.3], ["Bostancı Bağcıl SK", 26, 12, 4, 10, 42, 46, -4, 40, 39.1, 0.9], ["Cihangir GSK", 26, 11, 4, 11, 44, 38, 6, 37, 35.4, 1.6], ["Lefke TSK", 26, 10, 7, 9, 36, 32, 4, 37, 35.2, 1.8], ["Gençlik Gücü TSK", 26, 11, 2, 13, 45, 49, -4, 35, 35.7, -0.7], ["Mağusa Türk Gücü", 26, 9, 6, 11, 42, 40, 2, 33, 38.1, -5.1], ["Hamitköy ŞHSK", 26, 9, 6, 11, 34, 47, -13, 33, 33.7, -0.7], ["Lapta Türk Birliği SK", 26, 8, 6, 12, 30, 41, -11, 30, 31.5, -1.5], ["Serdarlı GB", 26, 8, 3, 15, 32, 55, -23, 27, 35.7, -8.7], ["Türk Ocağı Limasol SK", 26, 7, 2, 17, 36, 65, -29, 23, 27.6, -4.6], ["Göçmenköy İYSK", 26, 2, 1, 23, 19, 77, -58, 7, 14.4, -7.4]], "2013-2014|1. Lig": [["Gönyeli SK", 26, 17, 4, 5, 67, 30, 37, 55, 49.9, 5.1], ["Lapta Türk Birliği SK", 26, 15, 3, 8, 36, 27, 9, 48, 41.8, 6.2], ["Esentepe KSKK", 26, 12, 6, 8, 39, 31, 8, 42, 35.6, 6.4], ["L. Gençler Birliği SK", 26, 13, 3, 10, 54, 47, 7, 42, 40.4, 1.6], ["Türk Ocağı Limasol SK", 26, 11, 7, 8, 52, 28, 24, 40, 33.5, 6.5], ["Dumlupınar TSK", 26, 10, 8, 8, 40, 39, 1, 38, 38.3, -0.3], ["Göçmenköy İYSK", 26, 10, 4, 12, 33, 34, -1, 34, 31.7, 2.3], ["Akıncılar GSK", 26, 8, 10, 8, 30, 32, -2, 34, 36.4, -2.4], ["Düzkaya KOSK", 26, 9, 7, 10, 33, 43, -10, 34, 37.0, -3.0], ["Değirmenlik SK", 26, 9, 5, 12, 36, 43, -7, 32, 36.6, -4.6], ["Binatlı YSK", 26, 8, 7, 11, 30, 39, -9, 31, 37.8, -6.8], ["Baf Ülkü Yurdu", 26, 6, 9, 11, 26, 31, -5, 27, 30.1, -3.1], ["Ozanköy SK", 26, 7, 5, 14, 20, 45, -25, 26, 27.9, -1.9], ["Türkmenköy ASK", 26, 5, 6, 15, 25, 52, -27, 21, 29.8, -8.8]], "2013-2014|Süper Lig": [["Yenicami AK", 26, 20, 3, 3, 76, 16, 60, 63, 53.9, 9.1], ["Küçük Kaymaklı TSK", 26, 20, 2, 4, 82, 23, 59, 62, 49.7, 12.3], ["Lefke TSK", 26, 15, 6, 5, 60, 25, 35, 51, 45.6, 5.4], ["Çetinkaya TSK", 26, 13, 5, 8, 36, 30, 6, 44, 50.0, -6.0], ["Doğan Türk Birliği", 26, 12, 6, 8, 51, 45, 6, 42, 39.7, 2.3], ["Cihangir GSK", 26, 10, 6, 10, 44, 38, 6, 36, 36.4, -0.4], ["Bostancı Bağcıl SK", 26, 10, 6, 10, 43, 43, 0, 36, 33.3, 2.7], ["Mağusa Türk Gücü", 26, 11, 3, 12, 35, 40, -5, 36, 34.2, 1.8], ["Serdarlı GB", 26, 9, 8, 9, 33, 36, -3, 35, 28.4, 6.6], ["Mormenekşe GBSK", 26, 11, 2, 13, 34, 41, -7, 35, 33.5, 1.5], ["Hamitköy ŞHSK", 26, 8, 6, 12, 34, 51, -17, 30, 33.8, -3.8], ["Yeniboğaziçi DSK", 26, 6, 3, 17, 30, 57, -27, 21, 26.3, -5.3], ["Yalova SK", 26, 5, 5, 16, 30, 61, -31, 20, 25.4, -5.4], ["Gençlik Gücü TSK", 26, 1, 1, 24, 21, 103, -82, 4, 20.2, -16.2]], "2014-2015|1. Lig": [["Türk Ocağı Limasol SK", 26, 19, 7, 0, 61, 14, 47, 64, 54.7, 9.3], ["Değirmenlik SK", 26, 14, 8, 4, 48, 32, 16, 50, 41.2, 8.8], ["Binatlı YSK", 26, 13, 6, 7, 42, 29, 13, 45, 37.5, 7.5], ["Yalova SK", 26, 10, 12, 4, 56, 25, 31, 42, 40.0, 2.0], ["Göçmenköy İYSK", 26, 12, 5, 9, 40, 40, 0, 41, 38.0, 3.0], ["Hamitköy ŞHSK", 26, 11, 6, 9, 41, 29, 12, 39, 40.1, -1.1], ["Esentepe KSKK", 26, 10, 7, 9, 49, 29, 20, 37, 44.1, -7.1], ["Düzkaya KOSK", 26, 11, 4, 11, 49, 45, 4, 37, 35.5, 1.5], ["Dumlupınar TSK", 26, 10, 6, 10, 46, 38, 8, 36, 35.7, 0.3], ["Görneç KSK", 26, 9, 8, 9, 41, 40, 1, 35, 34.3, 0.7], ["Denizli SK", 26, 8, 7, 11, 24, 27, -3, 31, 37.1, -6.1], ["Gençlik Gücü TSK", 26, 7, 4, 15, 25, 47, -22, 25, 21.8, 3.2], ["Akıncılar GSK", 26, 4, 2, 20, 25, 75, -50, 14, 26.1, -12.1], ["Geçitkale GSK", 26, 1, 4, 21, 22, 99, -77, 7, 22.7, -15.7]], "2014-2015|Süper Lig": [["Yenicami AK", 26, 22, 2, 2, 86, 20, 66, 68, 57.8, 10.2], ["Küçük Kaymaklı TSK", 26, 17, 4, 5, 58, 26, 32, 55, 53.0, 2.0], ["Mormenekşe GBSK", 26, 14, 6, 6, 42, 24, 18, 48, 39.0, 9.0], ["Doğan Türk Birliği", 26, 14, 4, 8, 50, 37, 13, 46, 40.2, 5.8], ["Lefke TSK", 26, 13, 1, 12, 60, 40, 20, 40, 43.2, -3.2], ["Cihangir GSK", 26, 11, 6, 9, 46, 43, 3, 39, 35.2, 3.8], ["Mağusa Türk Gücü", 26, 11, 4, 11, 42, 37, 5, 37, 32.7, 4.3], ["Yeniboğaziçi DSK", 26, 9, 10, 7, 22, 26, -4, 37, 30.8, 6.2], ["Serdarlı GB", 26, 8, 11, 7, 40, 35, 5, 35, 35.8, -0.8], ["Bostancı Bağcıl SK", 26, 9, 7, 10, 59, 39, 20, 34, 37.5, -3.5], ["L. Gençler Birliği SK", 26, 9, 6, 11, 36, 32, 4, 33, 32.8, 0.2], ["Çetinkaya TSK", 26, 7, 5, 14, 33, 55, -22, 26, 30.3, -4.3], ["Gönyeli SK", 26, 1, 3, 22, 28, 107, -79, 6, 22.1, -16.1], ["Lapta Türk Birliği SK", 26, 1, 3, 22, 12, 93, -81, 6, 19.9, -13.9]], "2015-2016|1. Lig": [["Dumlupınar TSK", 26, 20, 0, 6, 71, 32, 39, 60, 46.3, 13.7], ["Gençlik Gücü TSK", 26, 17, 5, 4, 65, 37, 28, 56, 43.7, 12.3], ["Yalova SK", 26, 16, 5, 5, 53, 28, 25, 53, 48.9, 4.1], ["Denizli SK", 26, 12, 7, 7, 36, 25, 11, 43, 40.0, 3.0], ["Girne Halk Evi SK", 26, 12, 5, 9, 39, 27, 12, 41, 43.5, -2.5], ["Baf Ülkü Yurdu", 26, 10, 7, 9, 41, 28, 13, 37, 36.6, 0.4], ["Düzkaya KOSK", 26, 11, 3, 12, 37, 42, -5, 36, 37.7, -1.7], ["Göçmenköy İYSK", 26, 9, 5, 12, 33, 40, -7, 32, 34.9, -2.9], ["M. Karşıyaka ASK", 26, 8, 6, 12, 32, 47, -15, 30, 38.4, -8.4], ["Hamitköy ŞHSK", 26, 8, 5, 13, 34, 36, -2, 29, 35.3, -6.3], ["Esentepe KSKK", 26, 7, 8, 11, 31, 42, -11, 29, 34.8, -5.8], ["Gönyeli SK", 26, 9, 1, 16, 30, 66, -36, 28, 21.0, 7.0], ["Görneç KSK", 26, 7, 4, 15, 31, 50, -19, 25, 30.9, -5.9], ["Lapta Türk Birliği SK", 26, 4, 3, 19, 25, 58, -33, 15, 17.4, -2.4]], "2015-2016|Süper Lig": [["Mağusa Türk Gücü", 26, 15, 5, 6, 52, 33, 19, 50, 42.9, 7.1], ["Çetinkaya TSK", 26, 13, 10, 3, 62, 35, 27, 49, 41.2, 7.8], ["Binatlı YSK", 26, 13, 7, 6, 53, 37, 16, 46, 42.0, 4.0], ["L. Gençler Birliği SK", 26, 13, 6, 7, 51, 34, 17, 45, 38.7, 6.3], ["Lefke TSK", 26, 11, 7, 8, 43, 34, 9, 40, 38.1, 1.9], ["Yenicami AK", 26, 10, 9, 7, 45, 37, 8, 39, 47.1, -8.1], ["Küçük Kaymaklı TSK", 26, 11, 6, 9, 41, 36, 5, 39, 39.8, -0.8], ["Türk Ocağı Limasol SK", 26, 10, 8, 8, 44, 36, 8, 38, 38.1, -0.1], ["Doğan Türk Birliği", 26, 9, 7, 10, 56, 51, 5, 34, 39.1, -5.1], ["Cihangir GSK", 26, 10, 4, 12, 45, 46, -1, 34, 32.7, 1.3], ["Değirmenlik SK", 26, 7, 5, 14, 39, 63, -24, 26, 27.2, -1.2], ["Mormenekşe GBSK", 26, 6, 6, 14, 30, 46, -16, 24, 30.1, -6.1], ["Yeniboğaziçi DSK", 26, 4, 7, 15, 33, 67, -34, 19, 23.6, -4.6], ["Bostancı Bağcıl SK", 26, 2, 9, 15, 18, 57, -39, 15, 27.0, -12.0]], "2016-2017|1. Lig": [["Alsancak Yeşilova SK", 18, 12, 4, 2, 40, 14, 26, 40, 29.9, 10.1], ["Göçmenköy İYSK", 18, 8, 6, 4, 36, 20, 16, 30, 24.2, 5.8], ["Yeniboğaziçi DSK", 18, 9, 2, 7, 40, 30, 10, 29, 24.3, 4.7], ["Hamitköy ŞHSK", 18, 8, 3, 7, 27, 23, 4, 27, 22.3, 4.7], ["Maraş GSK", 18, 8, 3, 7, 37, 34, 3, 27, 28.9, -1.9], ["Akova Vuda TÇBSK", 18, 8, 2, 8, 41, 35, 6, 26, 26.7, -0.7], ["Mehmetçik TÇBSK", 18, 7, 5, 6, 27, 25, 2, 26, 28.6, -2.6], ["Mesarya SK", 18, 7, 3, 8, 33, 38, -5, 24, 25.8, -1.8], ["Düzkaya KOSK", 18, 7, 2, 9, 29, 26, 3, 23, 22.7, 0.3], ["Dipkarpaz SK", 18, 0, 2, 16, 13, 78, -65, 2, 17.3, -15.3]], "2016-2017|Süper Lig": [["Yenicami AK", 30, 22, 6, 2, 84, 21, 63, 72, 61.7, 10.3], ["Doğan Türk Birliği", 30, 17, 5, 8, 53, 28, 25, 56, 44.7, 11.3], ["Cihangir GSK", 30, 15, 9, 6, 54, 36, 18, 54, 47.3, 6.7], ["L. Gençler Birliği SK", 30, 16, 5, 9, 52, 36, 16, 53, 48.0, 5.0], ["Küçük Kaymaklı TSK", 30, 14, 9, 7, 47, 36, 11, 51, 46.2, 4.8], ["Yalova SK", 30, 12, 11, 7, 55, 42, 13, 47, 44.2, 2.8], ["Türk Ocağı Limasol SK", 30, 14, 4, 12, 60, 44, 16, 46, 46.8, -0.8], ["Çetinkaya TSK", 30, 13, 4, 13, 55, 46, 9, 43, 50.6, -7.6], ["Lefke TSK", 30, 12, 6, 12, 45, 50, -5, 42, 42.5, -0.5], ["Gençlik Gücü TSK", 30, 11, 5, 14, 38, 49, -11, 38, 37.6, 0.4], ["Baf Ülkü Yurdu", 30, 11, 3, 16, 46, 61, -15, 36, 33.8, 2.2], ["Binatlı YSK", 30, 9, 8, 13, 50, 59, -9, 35, 37.2, -2.2], ["Mağusa Türk Gücü", 30, 9, 7, 14, 36, 45, -9, 34, 40.8, -6.8], ["Değirmenlik SK", 30, 7, 5, 18, 30, 67, -37, 26, 27.9, -1.9], ["Dumlupınar TSK", 30, 5, 5, 20, 36, 76, -40, 20, 34.3, -14.3], ["Mormenekşe GBSK", 30, 5, 4, 21, 36, 81, -45, 19, 26.5, -7.5]], "2017-2018|1. Lig": [["Gönyeli SK", 30, 19, 5, 6, 56, 34, 22, 62, 50.5, 11.5], ["Esentepe KSKK", 30, 16, 7, 7, 49, 39, 10, 55, 49.9, 5.1], ["Girne Halk Evi SK", 30, 16, 5, 9, 58, 44, 14, 53, 45.9, 7.1], ["Mormenekşe GBSK", 30, 16, 2, 12, 54, 46, 8, 50, 44.7, 5.3], ["Dumlupınar TSK", 30, 15, 4, 11, 61, 39, 22, 49, 44.5, 4.5], ["Hamitköy ŞHSK", 30, 15, 3, 12, 59, 43, 16, 48, 49.2, -1.2], ["Maraş GSK", 30, 13, 8, 9, 56, 42, 14, 47, 49.3, -2.3], ["Göçmenköy İYSK", 30, 11, 6, 13, 41, 46, -5, 39, 45.6, -6.6], ["Akova Vuda TÇBSK", 30, 11, 6, 13, 55, 69, -14, 39, 37.1, 1.9], ["Değirmenlik SK", 30, 10, 8, 12, 41, 48, -7, 38, 38.1, -0.1], ["Bostancı Bağcıl SK", 30, 10, 7, 13, 39, 43, -4, 37, 38.1, -1.1], ["Doğancı SK", 30, 10, 5, 15, 45, 43, 2, 35, 38.0, -3.0], ["Çanakkale TSK", 30, 10, 5, 15, 31, 47, -16, 35, 33.7, 1.3], ["Lapta Türk Birliği SK", 30, 9, 7, 14, 47, 54, -7, 34, 36.7, -2.7], ["Mehmetçik TÇBSK", 30, 6, 9, 15, 27, 45, -18, 27, 35.2, -8.2], ["Görneç KSK", 30, 6, 7, 17, 29, 66, -37, 25, 31.6, -6.6]], "2017-2018|Süper Lig": [["Yenicami AK", 30, 18, 7, 5, 63, 33, 30, 61, 60.4, 0.6], ["Doğan Türk Birliği", 30, 17, 6, 7, 61, 42, 19, 57, 53.1, 3.9], ["Çetinkaya TSK", 30, 16, 7, 7, 57, 42, 15, 55, 47.1, 7.9], ["Binatlı YSK", 30, 14, 8, 8, 58, 43, 15, 50, 47.8, 2.2], ["Alsancak Yeşilova SK", 30, 12, 12, 6, 46, 35, 11, 48, 45.9, 2.1], ["Baf Ülkü Yurdu", 30, 12, 9, 9, 63, 43, 20, 45, 42.0, 3.0], ["Lefke TSK", 30, 13, 5, 12, 64, 48, 16, 44, 40.0, 4.0], ["Cihangir GSK", 30, 12, 7, 11, 53, 49, 4, 43, 42.6, 0.4], ["Küçük Kaymaklı TSK", 30, 13, 3, 14, 61, 62, -1, 42, 46.4, -4.4], ["Mağusa Türk Gücü", 30, 11, 8, 11, 54, 47, 7, 41, 37.3, 3.7], ["Türk Ocağı Limasol SK", 30, 13, 2, 15, 47, 45, 2, 41, 42.1, -1.1], ["L. Gençler Birliği SK", 30, 10, 7, 13, 52, 60, -8, 37, 43.7, -6.7], ["Gençlik Gücü TSK", 30, 10, 4, 16, 40, 65, -25, 34, 31.8, 2.2], ["Yalova SK", 30, 6, 7, 17, 45, 68, -23, 25, 34.9, -9.9], ["Yeniboğaziçi DSK", 30, 5, 9, 16, 24, 59, -35, 24, 30.1, -6.1], ["Ozanköy SK", 30, 4, 7, 19, 29, 76, -47, 19, 24.9, -5.9]], "2018-2019|1. Lig": [["Düzkaya KOSK", 30, 20, 2, 8, 54, 28, 26, 62, 50.5, 11.5], ["Göçmenköy İYSK", 30, 20, 2, 8, 62, 40, 22, 62, 50.3, 11.7], ["Ozanköy SK", 30, 17, 9, 4, 57, 38, 19, 60, 47.3, 12.7], ["Hamitköy ŞHSK", 30, 16, 7, 7, 70, 48, 22, 55, 51.3, 3.7], ["Akova Vuda TÇBSK", 30, 14, 10, 6, 69, 34, 35, 52, 52.3, -0.3], ["Yalova SK", 30, 11, 11, 8, 35, 33, 2, 44, 46.7, -2.7], ["Mesarya SK", 30, 11, 8, 11, 65, 59, 6, 41, 43.2, -2.2], ["Dumlupınar TSK", 30, 10, 9, 11, 58, 44, 14, 39, 45.4, -6.4], ["Bostancı Bağcıl SK", 30, 10, 7, 13, 51, 51, 0, 37, 39.2, -2.2], ["M. Karşıyaka ASK", 30, 9, 10, 11, 43, 44, -1, 37, 41.0, -4.0], ["Mormenekşe GBSK", 30, 11, 4, 15, 45, 56, -11, 37, 37.4, -0.4], ["Maraş GSK", 30, 11, 4, 15, 45, 59, -14, 37, 36.3, 0.7], ["Çanakkale TSK", 30, 9, 5, 16, 37, 73, -36, 32, 32.8, -0.8], ["Doğancı SK", 30, 7, 7, 16, 39, 64, -25, 28, 36.3, -8.3], ["Yeniboğaziçi DSK", 30, 7, 4, 19, 30, 55, -25, 25, 32.7, -7.7], ["Değirmenlik SK", 30, 6, 3, 21, 38, 72, -34, 21, 26.8, -5.8]], "2018-2019|Süper Lig": [["Mağusa Türk Gücü", 30, 24, 3, 3, 91, 30, 61, 75, 57.3, 17.7], ["Yenicami AK", 30, 23, 5, 2, 93, 36, 57, 74, 61.2, 12.8], ["Doğan Türk Birliği", 30, 18, 2, 10, 59, 41, 18, 56, 51.7, 4.3], ["Alsancak Yeşilova SK", 30, 16, 5, 9, 59, 44, 15, 53, 48.6, 4.4], ["Çetinkaya TSK", 30, 14, 7, 9, 46, 38, 8, 49, 47.3, 1.7], ["Türk Ocağı Limasol SK", 30, 14, 5, 11, 54, 45, 9, 47, 45.6, 1.4], ["Lefke TSK", 30, 14, 4, 12, 54, 46, 8, 46, 46.2, -0.2], ["Gönyeli SK", 30, 14, 3, 13, 50, 46, 4, 45, 43.6, 1.4], ["Cihangir GSK", 30, 11, 6, 13, 52, 63, -11, 39, 44.9, -5.9], ["Baf Ülkü Yurdu", 30, 10, 6, 14, 52, 59, -7, 36, 43.0, -7.0], ["Gençlik Gücü TSK", 30, 10, 6, 14, 59, 68, -9, 36, 34.2, 1.8], ["Küçük Kaymaklı TSK", 30, 8, 9, 13, 44, 69, -25, 33, 32.4, 0.6], ["Binatlı YSK", 30, 8, 5, 17, 39, 65, -26, 29, 33.9, -4.9], ["Esentepe KSKK", 30, 9, 2, 19, 39, 66, -27, 29, 26.0, 3.0], ["L. Gençler Birliği SK", 30, 3, 9, 18, 30, 71, -41, 18, 27.9, -9.9], ["Girne Halk Evi SK", 30, 4, 3, 23, 39, 73, -34, 15, 28.0, -13.0]], "2019-2020|1. Lig": [["Mesarya SK", 28, 20, 7, 1, 69, 18, 51, 67, 55.8, 11.2], ["Dumlupınar TSK", 28, 18, 5, 5, 56, 14, 42, 59, 50.2, 8.8], ["Girne Halk Evi SK", 28, 16, 8, 4, 62, 28, 34, 56, 43.7, 12.3], ["Yalova SK", 29, 12, 8, 9, 40, 28, 12, 44, 47.4, -3.4], ["Esentepe KSKK", 28, 12, 8, 8, 46, 37, 9, 44, 40.7, 3.3], ["L. Gençler Birliği SK", 28, 13, 4, 11, 57, 46, 11, 43, 41.2, 1.8], ["Dörtyol SK", 28, 11, 7, 10, 42, 40, 2, 40, 41.0, -1.0], ["Maraş GSK", 28, 10, 8, 10, 39, 36, 3, 38, 43.2, -5.2], ["Mormenekşe GBSK", 28, 10, 5, 13, 35, 51, -16, 35, 35.2, -0.2], ["Görneç KSK", 28, 9, 7, 12, 54, 62, -8, 34, 32.9, 1.1], ["M. Karşıyaka ASK", 28, 7, 11, 10, 28, 42, -14, 32, 33.3, -1.3], ["Lapta Türk Birliği SK", 28, 9, 3, 16, 43, 47, -4, 30, 33.7, -3.7], ["Çanakkale TSK", 28, 6, 7, 15, 35, 67, -32, 25, 27.4, -2.4], ["Bostancı Bağcıl SK", 28, 5, 9, 14, 37, 44, -7, 24, 30.3, -6.3], ["Ozanköy SK", 28, 3, 3, 22, 21, 101, -80, 12, 31.6, -19.6], ["Doğancı SK", 1, 0, 0, 1, 0, 3, -3, 0, 1.3, -1.3]], "2019-2020|Süper Lig": [["Mağusa Türk Gücü", 30, 24, 4, 2, 104, 31, 73, 76, 66.9, 9.1], ["Alsancak Yeşilova SK", 30, 18, 5, 7, 82, 49, 33, 59, 51.7, 7.3], ["Doğan Türk Birliği", 30, 17, 6, 7, 60, 41, 19, 57, 53.4, 3.6], ["Türk Ocağı Limasol SK", 30, 14, 10, 6, 55, 40, 15, 52, 51.1, 0.9], ["Yenicami AK", 30, 15, 6, 9, 86, 60, 26, 51, 58.8, -7.8], ["Baf Ülkü Yurdu", 30, 13, 5, 12, 47, 53, -6, 44, 36.0, 8.0], ["Cihangir GSK", 30, 13, 4, 13, 66, 57, 9, 43, 42.9, 0.1], ["Göçmenköy İYSK", 30, 12, 6, 12, 47, 54, -7, 42, 37.2, 4.8], ["Lefke TSK", 30, 11, 6, 13, 48, 57, -9, 39, 40.9, -1.9], ["Küçük Kaymaklı TSK", 30, 11, 5, 14, 54, 63, -9, 38, 40.3, -2.3], ["Gönyeli SK", 30, 11, 3, 16, 61, 72, -11, 36, 35.2, 0.8], ["Binatlı YSK", 30, 9, 7, 14, 50, 62, -12, 34, 31.0, 3.0], ["Hamitköy ŞHSK", 30, 9, 7, 14, 50, 68, -18, 34, 35.3, -1.3], ["Düzkaya KOSK", 30, 7, 5, 18, 41, 77, -36, 26, 30.0, -4.0], ["Çetinkaya TSK", 30, 6, 7, 17, 36, 56, -20, 25, 34.2, -9.2], ["Gençlik Gücü TSK", 30, 4, 6, 20, 34, 81, -47, 18, 27.3, -9.3]], "2021-2022|1. Lig": [["Çetinkaya TSK", 30, 21, 5, 4, 82, 27, 55, 68, 56.2, 11.8], ["Gençlik Gücü TSK", 30, 20, 3, 7, 62, 29, 33, 63, 48.8, 14.2], ["L. Gençler Birliği SK", 30, 17, 6, 7, 43, 30, 13, 57, 50.2, 6.8], ["Değirmenlik SK", 29, 17, 4, 8, 53, 41, 12, 55, 44.8, 10.2], ["M. Karşıyaka ASK", 30, 15, 9, 6, 60, 34, 26, 54, 49.6, 4.4], ["Esentepe KSKK", 30, 13, 8, 9, 54, 43, 11, 47, 48.3, -1.3], ["Dörtyol SK", 30, 13, 7, 10, 67, 52, 15, 46, 50.5, -4.5], ["Düzkaya KOSK", 30, 11, 9, 10, 42, 41, 1, 42, 42.6, -0.6], ["Yeniboğaziçi DSK", 30, 10, 11, 9, 42, 39, 3, 41, 39.0, 2.0], ["Mormenekşe GBSK", 30, 9, 12, 9, 31, 39, -8, 39, 42.1, -3.1], ["Maraş GSK", 30, 10, 6, 14, 45, 58, -13, 36, 37.9, -1.9], ["Yalova SK", 30, 9, 8, 13, 44, 51, -7, 35, 38.2, -3.2], ["İncirli SK", 30, 9, 6, 15, 33, 52, -19, 33, 40.9, -7.9], ["Bostancı Bağcıl SK", 29, 5, 6, 18, 24, 50, -26, 21, 29.4, -8.4], ["Çanakkale TSK", 30, 3, 5, 22, 45, 83, -38, 14, 24.9, -10.9], ["Görneç KSK", 30, 2, 5, 23, 22, 80, -58, 11, 24.7, -13.7]], "2021-2022|Süper Lig": [["Mağusa Türk Gücü", 30, 22, 3, 5, 80, 32, 48, 69, 65.5, 3.5], ["Alsancak Yeşilova SK", 30, 14, 9, 7, 58, 43, 15, 51, 56.0, -5.0], ["Doğan Türk Birliği", 30, 14, 9, 7, 50, 38, 12, 51, 50.6, 0.4], ["Yenicami AK", 30, 14, 8, 8, 72, 40, 32, 50, 45.9, 4.1], ["Gönyeli SK", 30, 14, 8, 8, 45, 35, 10, 50, 45.5, 4.5], ["Lefke TSK", 30, 13, 11, 6, 41, 31, 10, 50, 43.4, 6.6], ["Mesarya SK", 30, 15, 4, 11, 43, 25, 18, 49, 47.2, 1.8], ["Dumlupınar TSK", 30, 14, 6, 10, 53, 33, 20, 48, 46.3, 1.7], ["Cihangir GSK", 30, 13, 9, 8, 55, 46, 9, 48, 37.7, 10.3], ["Küçük Kaymaklı TSK", 30, 10, 12, 8, 41, 34, 7, 42, 39.1, 2.9], ["Göçmenköy İYSK", 30, 11, 6, 13, 36, 44, -8, 39, 38.8, 0.2], ["Türk Ocağı Limasol SK", 30, 11, 6, 13, 36, 46, -10, 39, 41.3, -2.3], ["Hamitköy ŞHSK", 30, 10, 5, 15, 44, 51, -7, 35, 34.8, 0.2], ["Baf Ülkü Yurdu", 30, 5, 7, 18, 19, 58, -39, 22, 28.7, -6.7], ["Binatlı YSK", 30, 4, 4, 22, 28, 75, -47, 16, 25.4, -9.4], ["Girne Halk Evi SK", 30, 1, 3, 26, 25, 95, -70, 6, 25.4, -19.4]], "2022-2023|1. Lig": [["Karşıyaka SK", 30, 20, 3, 7, 83, 38, 45, 63, 57.3, 5.7], ["Yeniboğaziçi DSK", 30, 18, 5, 7, 77, 35, 42, 59, 50.7, 8.3], ["Esentepe KSKK", 30, 15, 11, 4, 67, 29, 38, 56, 53.7, 2.3], ["Düzkaya KOSK", 30, 15, 6, 9, 53, 41, 12, 51, 48.4, 2.6], ["Yalova SK", 30, 15, 6, 9, 43, 33, 10, 51, 46.1, 4.9], ["L. Gençler Birliği SK", 30, 13, 11, 6, 57, 39, 18, 50, 53.4, -3.4], ["Baf Ülkü Yurdu", 30, 15, 4, 11, 58, 43, 15, 49, 51.2, -2.2], ["Binatlı YSK", 30, 11, 9, 10, 45, 44, 1, 42, 39.9, 2.1], ["Lapta Türk Birliği SK", 30, 12, 5, 13, 42, 39, 3, 41, 39.8, 1.2], ["Mormenekşe GBSK", 30, 11, 8, 11, 51, 53, -2, 41, 40.8, 0.2], ["Maraş GSK", 30, 11, 6, 13, 61, 60, 1, 39, 37.6, 1.4], ["Girne Halk Evi SK", 30, 12, 3, 15, 39, 41, -2, 39, 31.7, 7.3], ["M. Hacıali Yılmazköy SK", 30, 8, 8, 14, 36, 52, -16, 32, 39.8, -7.8], ["Dörtyol SK", 30, 7, 5, 18, 36, 72, -36, 26, 27.1, -1.1], ["İncirli SK", 30, 4, 7, 19, 30, 76, -46, 19, 27.2, -8.2], ["Yenierenköy TSK", 30, 3, 3, 24, 40, 123, -83, 12, 26.4, -14.4]], "2022-2023|Süper Lig": [["Mağusa Türk Gücü", 29, 26, 2, 1, 89, 27, 62, 80, 66.8, 13.2], ["Mesarya SK", 29, 18, 7, 4, 61, 31, 30, 61, 52.1, 8.9], ["Cihangir GSK", 29, 19, 4, 6, 62, 33, 29, 61, 53.7, 7.3], ["Doğan Türk Birliği", 29, 17, 6, 6, 69, 31, 38, 57, 49.7, 7.3], ["Yenicami AK", 29, 14, 7, 8, 57, 47, 10, 49, 52.2, -3.2], ["Dumlupınar TSK", 29, 14, 7, 8, 46, 36, 10, 49, 48.0, 1.0], ["Lefke TSK", 29, 11, 6, 12, 35, 38, -3, 39, 41.2, -2.2], ["Alsancak Yeşilova SK", 29, 10, 6, 13, 43, 52, -9, 36, 34.8, 1.2], ["Küçük Kaymaklı TSK", 29, 9, 6, 14, 35, 51, -16, 33, 33.9, -0.9], ["Değirmenlik SK", 15, 9, 4, 2, 34, 17, 17, 31, 21.7, 9.3], ["Göçmenköy İYSK", 29, 8, 5, 16, 43, 60, -17, 29, 30.8, -1.8], ["Çetinkaya TSK", 29, 7, 5, 17, 34, 63, -29, 26, 33.8, -7.8], ["Gençlik Gücü TSK", 29, 6, 7, 16, 34, 59, -25, 25, 31.0, -6.0], ["Hamitköy ŞHSK", 29, 7, 3, 19, 34, 56, -22, 24, 27.0, -3.0], ["Türk Ocağı Limasol SK", 29, 7, 2, 20, 34, 56, -22, 23, 27.5, -4.5], ["Gönyeli SK", 29, 2, 5, 22, 31, 84, -53, 11, 27.4, -16.4]], "2023-2024|1. Lig": [["Değirmenlik SK", 30, 25, 4, 1, 79, 13, 66, 79, 69.3, 9.7], ["Gönyeli SK", 30, 16, 3, 11, 67, 41, 26, 51, 44.1, 6.9], ["Esentepe KSKK", 30, 14, 9, 7, 41, 30, 11, 51, 57.4, -6.4], ["Çanakkale TSK", 30, 14, 6, 10, 55, 40, 15, 48, 39.5, 8.5], ["Yalova SK", 30, 13, 9, 8, 44, 39, 5, 48, 47.4, 0.6], ["M. Hacıali Yılmazköy SK", 30, 11, 13, 6, 44, 33, 11, 46, 43.1, 2.9], ["Binatlı YSK", 30, 13, 7, 10, 40, 39, 1, 46, 41.7, 4.3], ["Hamitköy ŞHSK", 30, 12, 9, 9, 40, 38, 2, 45, 45.0, -0.0], ["Düzkaya KOSK", 30, 10, 8, 12, 40, 44, -4, 38, 43.4, -5.4], ["Mormenekşe GBSK", 30, 7, 15, 8, 39, 39, 0, 36, 38.4, -2.4], ["Lapta Türk Birliği SK", 30, 9, 7, 14, 37, 57, -20, 34, 39.2, -5.2], ["Ozanköy SK", 30, 7, 12, 11, 42, 56, -14, 33, 32.1, 0.9], ["Geçitkale GSK", 30, 9, 5, 16, 59, 74, -15, 32, 35.6, -3.6], ["Maraş GSK", 30, 7, 10, 13, 43, 57, -14, 31, 37.6, -6.6], ["Girne Halk Evi SK", 30, 5, 8, 17, 26, 59, -33, 23, 30.9, -7.9], ["Baf Ülkü Yurdu", 30, 3, 5, 22, 25, 62, -37, 14, 26.3, -12.3]], "2023-2024|Süper Lig": [["Mağusa Türk Gücü", 30, 26, 2, 2, 112, 22, 90, 80, 71.8, 8.2], ["Cihangir GSK", 30, 25, 1, 4, 75, 24, 51, 76, 64.8, 11.2], ["Dumlupınar TSK", 30, 18, 2, 10, 77, 53, 24, 56, 53.6, 2.4], ["Göçmenköy İYSK", 30, 16, 6, 8, 60, 40, 20, 54, 44.8, 9.2], ["Doğan Türk Birliği", 30, 15, 5, 10, 65, 41, 24, 50, 52.9, -2.9], ["Çetinkaya TSK", 30, 15, 4, 11, 65, 50, 15, 49, 40.7, 8.3], ["Karşıyaka SK", 30, 14, 7, 9, 64, 51, 13, 49, 42.6, 6.4], ["L. Gençler Birliği SK", 30, 12, 4, 14, 54, 63, -9, 40, 34.8, 5.2], ["Lefke TSK", 30, 11, 6, 13, 37, 42, -5, 39, 35.3, 3.7], ["Alsancak Yeşilova SK", 30, 12, 3, 15, 49, 58, -9, 39, 40.0, -1.0], ["Yenicami AK", 30, 11, 5, 14, 50, 57, -7, 38, 41.1, -3.1], ["Gençlik Gücü TSK", 30, 10, 5, 15, 57, 60, -3, 35, 34.9, 0.1], ["Mesarya SK", 30, 10, 2, 18, 37, 62, -25, 32, 42.1, -10.1], ["Küçük Kaymaklı TSK", 30, 10, 2, 18, 35, 64, -29, 32, 28.9, 3.1], ["Yeniboğaziçi DSK", 30, 4, 3, 23, 39, 100, -61, 15, 26.4, -11.4], ["Türk Ocağı Limasol SK", 30, 1, 3, 26, 26, 115, -89, 6, 20.3, -14.3]], "2024-2025|1. Lig": [["Mormenekşe GBSK", 30, 20, 4, 6, 60, 32, 28, 64, 54.0, 10.0], ["Küçük Kaymaklı TSK", 30, 18, 5, 7, 88, 30, 58, 59, 56.0, 3.0], ["Yeniboğaziçi DSK", 30, 17, 6, 7, 62, 30, 32, 57, 45.9, 11.1], ["Kozanköy KSK", 30, 17, 5, 8, 51, 28, 23, 56, 49.4, 6.6], ["Türk Ocağı Limasol SK", 30, 16, 6, 8, 45, 23, 22, 54, 38.7, 15.3], ["Binatlı YSK", 30, 15, 4, 11, 60, 44, 16, 49, 42.0, 7.0], ["Hamitköy ŞHSK", 30, 12, 8, 10, 45, 39, 6, 44, 45.5, -1.5], ["Geçitkale GSK", 30, 13, 5, 12, 45, 41, 4, 44, 40.8, 3.2], ["M. Hacıali Yılmazköy SK", 30, 12, 7, 11, 45, 41, 4, 43, 45.3, -2.3], ["Yalova SK", 30, 11, 9, 10, 41, 46, -5, 42, 46.6, -4.6], ["Düzkaya KOSK", 30, 10, 11, 9, 45, 42, 3, 41, 42.4, -1.4], ["Maraş GSK", 30, 10, 4, 16, 54, 72, -18, 34, 32.5, 1.5], ["Lapta Türk Birliği SK", 30, 8, 8, 14, 45, 41, 4, 32, 37.2, -5.2], ["Dipkarpaz SK", 30, 9, 5, 16, 45, 59, -14, 32, 39.4, -7.4], ["Vadili TÇBSK", 30, 2, 9, 19, 19, 82, -63, 15, 30.2, -15.2], ["Çanakkale TSK", 30, 1, 2, 27, 16, 116, -100, 5, 24.2, -19.2]], "2024-2025|Süper Lig": [["Doğan Türk Birliği", 30, 21, 7, 2, 67, 25, 42, 70, 57.0, 13.0], ["Mağusa Türk Gücü", 29, 21, 6, 2, 88, 30, 58, 69, 65.5, 3.5], ["Cihangir GSK", 30, 18, 4, 8, 65, 40, 25, 58, 57.9, 0.1], ["Gençlik Gücü TSK", 29, 15, 3, 11, 50, 41, 9, 48, 40.3, 7.7], ["Lefke TSK", 29, 15, 3, 11, 46, 45, 1, 48, 44.9, 3.1], ["Çetinkaya TSK", 29, 13, 5, 11, 59, 46, 13, 44, 44.3, -0.3], ["Alsancak Yeşilova SK", 29, 12, 6, 11, 50, 49, 1, 42, 35.1, 6.9], ["Esentepe KSKK", 30, 10, 7, 13, 37, 44, -7, 37, 34.3, 2.7], ["Değirmenlik SK", 20, 12, 0, 8, 26, 23, 3, 36, 37.0, -1.0], ["Mesarya SK", 29, 10, 6, 13, 46, 53, -7, 36, 35.8, 0.2], ["Dumlupınar TSK", 29, 11, 2, 16, 44, 55, -11, 35, 34.4, 0.6], ["Göçmenköy İYSK", 29, 8, 7, 14, 37, 51, -14, 31, 36.4, -5.4], ["Gönyeli SK", 30, 9, 4, 17, 47, 65, -18, 31, 30.9, 0.1], ["Karşıyaka SK", 29, 8, 4, 17, 37, 72, -35, 28, 32.9, -4.9], ["Yenicami AK", 30, 7, 3, 20, 43, 63, -20, 24, 28.6, -4.6], ["L. Gençler Birliği SK", 29, 4, 5, 20, 24, 64, -40, 17, 29.3, -12.3]], "2025-2026|1. Lig": [["Baf Ülkü Yurdu", 30, 18, 5, 7, 56, 35, 21, 59, 45.6, 13.4], ["Aslanköy GSD", 30, 17, 6, 7, 70, 27, 43, 57, 56.7, 0.3], ["Değirmenlik SK", 30, 16, 8, 6, 62, 32, 30, 56, 51.0, 5.0], ["Lapta Türk Birliği SK", 30, 15, 9, 6, 46, 23, 23, 54, 45.4, 8.6], ["L. Gençler Birliği SK", 30, 14, 9, 7, 51, 38, 13, 51, 42.6, 8.4], ["Düzkaya KOSK", 30, 14, 8, 8, 56, 40, 16, 50, 43.6, 6.4], ["M. Hacıali Yılmazköy SK", 30, 12, 11, 7, 46, 42, 4, 47, 43.9, 3.1], ["Türk Ocağı Limasol SK", 30, 11, 7, 12, 42, 48, -6, 40, 42.4, -2.4], ["Kozanköy KSK", 30, 12, 4, 14, 41, 47, -6, 40, 45.4, -5.4], ["Göçmenköy İYSK", 30, 11, 5, 14, 46, 45, 1, 38, 42.5, -4.5], ["Yalova SK", 30, 9, 10, 11, 31, 32, -1, 37, 36.3, 0.7], ["Binatlı YSK", 30, 9, 9, 12, 41, 47, -6, 36, 41.5, -5.5], ["Maraş GSK", 30, 10, 6, 14, 55, 65, -10, 36, 37.8, -1.8], ["Geçitkale GSK", 30, 9, 6, 15, 44, 55, -11, 33, 34.5, -1.5], ["Hamitköy ŞHSK", 30, 5, 3, 22, 34, 83, -49, 18, 29.0, -11.0], ["Kaplıca Karadeniz 61 SK", 30, 4, 2, 24, 27, 89, -62, 14, 31.0, -17.0]], "2025-2026|Süper Lig": [["Cihangir GSK", 30, 23, 4, 3, 93, 34, 59, 73, 61.9, 11.1], ["Gençlik Gücü TSK", 30, 23, 4, 3, 72, 20, 52, 73, 57.9, 15.1], ["Doğan Türk Birliği", 30, 20, 8, 2, 73, 35, 38, 68, 62.9, 5.1], ["Mağusa Türk Gücü", 30, 17, 6, 7, 69, 42, 27, 57, 59.0, -2.0], ["Dumlupınar TSK", 30, 14, 4, 12, 61, 46, 15, 46, 40.8, 5.2], ["Çetinkaya TSK", 30, 12, 6, 12, 47, 45, 2, 42, 44.9, -2.9], ["Alsancak Yeşilova SK", 30, 11, 5, 14, 51, 58, -7, 38, 42.4, -4.4], ["Küçük Kaymaklı TSK", 30, 10, 7, 13, 41, 42, -1, 37, 42.5, -5.5], ["Yenicami AK", 30, 10, 7, 13, 41, 55, -14, 37, 30.9, 6.1], ["Esentepe KSKK", 30, 10, 6, 14, 46, 51, -5, 36, 38.8, -2.8], ["Lefke TSK", 30, 10, 5, 15, 41, 51, -10, 35, 37.8, -2.8], ["Mesarya SK", 30, 9, 5, 16, 55, 67, -12, 32, 30.5, 1.5], ["Karşıyaka SK", 30, 8, 8, 14, 53, 76, -23, 32, 33.3, -1.3], ["Mormenekşe GBSK", 30, 8, 4, 18, 48, 86, -38, 28, 30.5, -2.5], ["Gönyeli SK", 30, 4, 9, 17, 26, 71, -45, 21, 28.8, -7.8], ["Yeniboğaziçi DSK", 30, 5, 4, 21, 32, 70, -38, 19, 30.3, -11.3]], "2026-2027|1. Lig": [["Göçmenköy İYSK", 2, 2, 0, 0, 9, 2, 7, 6, 3.0, 3.0], ["Türk Ocağı Limasol SK", 2, 2, 0, 0, 4, 0, 4, 6, 2.6, 3.4], ["Karaoğlanoğlu SK", 2, 2, 0, 0, 5, 2, 3, 6, 3.3, 2.7], ["L. Gençler Birliği SK", 2, 2, 0, 0, 3, 1, 2, 6, 2.8, 3.2], ["Lefke TSK", 2, 1, 0, 1, 7, 3, 4, 3, 2.8, 0.2], ["Lapta Türk Birliği SK", 2, 1, 0, 1, 5, 1, 4, 3, 3.3, -0.3], ["Mormenekşe GBSK", 2, 1, 0, 1, 4, 3, 1, 3, 2.6, 0.4], ["M. Hacıali Yılmazköy SK", 1, 1, 0, 0, 2, 1, 1, 3, 1.5, 1.5], ["Dikmen Gücü SK", 2, 1, 0, 1, 4, 4, 0, 3, 3.2, -0.2], ["Gönyeli SK", 2, 1, 0, 1, 3, 3, 0, 3, 2.3, 0.7], ["Yeniboğaziçi DSK", 1, 0, 0, 1, 0, 2, -2, 0, 1.2, -1.2], ["Düzkaya KOSK", 2, 0, 0, 2, 1, 4, -3, 0, 3.1, -3.1], ["Akdoğan SK", 2, 0, 0, 2, 2, 7, -5, 0, 2.8, -2.8], ["Maraş GSK", 2, 0, 0, 2, 2, 8, -6, 0, 1.9, -1.9], ["Geçitkale GSK", 2, 0, 0, 2, 1, 11, -10, 0, 2.5, -2.5]], "2026-2027|Süper Lig": [["Değirmenlik SK", 2, 2, 0, 0, 9, 0, 9, 6, 3.6, 2.4], ["Karşıyaka SK", 2, 2, 0, 0, 7, 1, 6, 6, 2.6, 3.4], ["Doğan Türk Birliği", 2, 1, 1, 0, 4, 0, 4, 4, 3.4, 0.6], ["Dumlupınar TSK", 2, 1, 1, 0, 6, 4, 2, 4, 3.1, 0.9], ["Gençlik Gücü TSK", 1, 1, 0, 0, 4, 1, 3, 3, 2.4, 0.6], ["Aslanköy GSD", 2, 1, 0, 1, 4, 2, 2, 3, 2.6, 0.4], ["Mağusa Türk Gücü", 1, 1, 0, 0, 2, 0, 2, 3, 1.4, 1.6], ["Mesarya SK", 2, 1, 0, 1, 5, 4, 1, 3, 2.9, 0.1], ["Alsancak Yeşilova SK", 2, 1, 0, 1, 2, 5, -3, 3, 2.0, 1.0], ["Cihangir GSK", 1, 0, 1, 0, 0, 0, 0, 1, 1.6, -0.6], ["Esentepe KSKK", 2, 0, 1, 1, 3, 6, -3, 1, 1.8, -0.8], ["Küçük Kaymaklı TSK", 1, 0, 0, 1, 0, 4, -4, 0, 0.7, -0.7], ["Çetinkaya TSK", 2, 0, 0, 2, 1, 6, -5, 0, 2.8, -2.8], ["Yenicami AK", 2, 0, 0, 2, 0, 5, -5, 0, 2.8, -2.8], ["Baf Ülkü Yurdu", 2, 0, 0, 2, 1, 10, -9, 0, 2.5, -2.5]]}, "puan_tum": {"Tümü": [["Mağusa Türk Gücü", 399, 242, 66, 91, 950, 485, 465, 792, 724.6, 67.4], ["Yenicami AK", 401, 219, 74, 108, 914, 551, 363, 731, 690.9, 40.1], ["Doğan Türk Birliği", 401, 215, 83, 103, 824, 547, 277, 728, 671.7, 56.3], ["Cihangir GSK", 400, 205, 72, 123, 800, 593, 207, 687, 630.8, 56.2], ["Çetinkaya TSK", 400, 190, 78, 132, 755, 580, 175, 648, 631.2, 16.8], ["Küçük Kaymaklı TSK", 400, 182, 77, 141, 735, 596, 139, 623, 604.1, 18.9], ["Dumlupınar TSK", 398, 176, 70, 152, 728, 604, 124, 598, 581.6, 16.4], ["Lefke TSK", 400, 171, 79, 150, 662, 578, 84, 592, 574.1, 17.9], ["Mormenekşe GBSK", 400, 156, 83, 161, 609, 662, -53, 551, 539.9, 11.1], ["Gençlik Gücü TSK", 399, 164, 58, 177, 687, 736, -49, 550, 517.4, 32.6], ["Türk Ocağı Limasol SK", 401, 156, 77, 168, 637, 668, -31, 545, 542.7, 2.3], ["Esentepe KSKK", 370, 146, 94, 130, 595, 525, 70, 532, 540.8, -8.8], ["Yalova SK", 373, 142, 106, 125, 569, 517, 52, 532, 546.9, -14.9], ["L. Gençler Birliği SK", 373, 150, 82, 141, 608, 599, 9, 532, 523.8, 8.2], ["Binatlı YSK", 400, 142, 100, 158, 601, 674, -73, 526, 524.0, 2.0], ["Göçmenköy İYSK", 388, 146, 69, 173, 568, 646, -78, 507, 499.5, 7.5], ["Düzkaya KOSK", 360, 143, 77, 140, 561, 565, -4, 506, 504.8, 1.2], ["Hamitköy ŞHSK", 387, 143, 77, 167, 598, 642, -44, 506, 521.7, -15.7], ["Değirmenlik SK", 294, 134, 54, 106, 495, 451, 44, 456, 425.3, 30.7], ["Gönyeli SK", 371, 129, 59, 183, 591, 756, -165, 446, 457.1, -11.1], ["Alsancak Yeşilova SK", 284, 123, 64, 97, 510, 459, 51, 433, 418.1, 14.9], ["Yeniboğaziçi DSK", 359, 113, 81, 165, 507, 649, -142, 420, 434.8, -14.8], ["Baf Ülkü Yurdu", 320, 107, 67, 146, 467, 531, -64, 388, 404.8, -16.8], ["Lapta Türk Birliği SK", 310, 100, 60, 150, 401, 523, -122, 360, 380.4, -20.4], ["Mesarya SK", 226, 101, 42, 83, 414, 357, 57, 345, 335.3, 9.7], ["Maraş GSK", 258, 90, 55, 113, 437, 491, -54, 325, 343.2, -18.2], ["Bostancı Bağcıl SK", 247, 72, 65, 110, 353, 405, -52, 281, 310.3, -29.3], ["Girne Halk Evi SK", 204, 66, 35, 103, 288, 367, -79, 233, 249.1, -16.1], ["Ozanköy SK", 196, 60, 44, 92, 264, 417, -153, 224, 236.4, -12.4], ["Görneç KSK", 192, 53, 45, 94, 267, 388, -121, 204, 230.9, -26.9], ["Karşıyaka SK", 121, 52, 22, 47, 244, 238, 6, 178, 168.7, 9.3], ["M. Hacıali Yılmazköy SK", 121, 44, 39, 38, 173, 169, 4, 171, 173.6, -2.6], ["Çanakkale TSK", 204, 46, 33, 125, 233, 511, -278, 171, 204.4, -33.4], ["M. Karşıyaka ASK", 114, 39, 36, 39, 163, 167, -4, 153, 162.2, -9.2], ["Serdarlı GB", 104, 40, 31, 33, 166, 143, 23, 151, 143.6, 7.4], ["Akova Vuda TÇBSK", 78, 33, 18, 27, 165, 138, 27, 117, 116.1, 0.9], ["Geçitkale GSK", 118, 32, 20, 66, 171, 280, -109, 116, 136.2, -20.2], ["Dörtyol SK", 88, 31, 19, 38, 145, 164, -19, 112, 118.6, -6.6], ["Kozanköy KSK", 60, 29, 9, 22, 92, 75, 17, 96, 94.8, 1.2], ["Türkmenköy ASK", 78, 23, 26, 29, 82, 108, -26, 95, 107.0, -12.0], ["Denizli SK", 52, 20, 14, 18, 60, 52, 8, 74, 77.0, -3.0], ["Doğancı SK", 61, 17, 12, 32, 84, 110, -26, 63, 75.6, -12.6], ["Aslanköy GSD", 32, 18, 6, 8, 74, 29, 45, 60, 59.3, 0.7], ["Mehmetçik TÇBSK", 48, 13, 14, 21, 54, 70, -16, 53, 63.8, -10.8], ["Bellapais Tatlısu HOSK", 52, 14, 10, 28, 77, 107, -30, 52, 61.5, -9.5], ["İncirli SK", 60, 13, 13, 34, 63, 128, -65, 52, 68.1, -16.1], ["Akıncılar GSK", 52, 12, 12, 28, 55, 107, -52, 48, 62.5, -14.5], ["Dipkarpaz SK", 48, 9, 7, 32, 58, 137, -79, 34, 56.6, -22.6], ["Vadili TÇBSK", 56, 4, 15, 37, 44, 156, -112, 27, 54.8, -27.8], ["Kaplıca Karadeniz 61 SK", 30, 4, 2, 24, 27, 89, -62, 14, 31.0, -17.0], ["Yenierenköy TSK", 30, 3, 3, 24, 40, 123, -83, 12, 26.4, -14.4], ["Karaoğlanoğlu SK", 2, 2, 0, 0, 5, 2, 3, 6, 3.3, 2.7], ["Dikmen Gücü SK", 2, 1, 0, 1, 4, 4, 0, 3, 3.2, -0.2], ["Akdoğan SK", 2, 0, 0, 2, 2, 7, -5, 0, 2.8, -2.8]], "Süper Lig": [["Mağusa Türk Gücü", 399, 242, 66, 91, 950, 485, 465, 792, 724.6, 67.4], ["Yenicami AK", 401, 219, 74, 108, 914, 551, 363, 731, 690.9, 40.1], ["Doğan Türk Birliği", 401, 215, 83, 103, 824, 547, 277, 728, 671.7, 56.3], ["Cihangir GSK", 400, 205, 72, 123, 800, 593, 207, 687, 630.8, 56.2], ["Lefke TSK", 398, 170, 79, 149, 655, 575, 80, 589, 571.2, 17.8], ["Çetinkaya TSK", 370, 169, 73, 128, 673, 553, 120, 580, 575.0, 5.0], ["Küçük Kaymaklı TSK", 370, 164, 72, 134, 647, 566, 81, 564, 548.1, 15.9], ["Alsancak Yeşilova SK", 240, 106, 51, 83, 440, 393, 47, 369, 356.4, 12.6], ["Gençlik Gücü TSK", 291, 102, 43, 146, 454, 596, -142, 349, 353.3, -4.3], ["Türk Ocağı Limasol SK", 287, 97, 50, 140, 433, 555, -122, 341, 370.8, -29.8], ["Dumlupınar TSK", 180, 77, 27, 76, 323, 303, 20, 258, 260.5, -2.5], ["L. Gençler Birliği SK", 201, 67, 42, 92, 299, 360, -61, 243, 255.1, -12.1], ["Göçmenköy İYSK", 200, 63, 36, 101, 268, 379, -111, 225, 229.4, -4.4], ["Mesarya SK", 150, 63, 24, 63, 247, 242, 5, 213, 210.6, 2.4], ["Gönyeli SK", 231, 58, 38, 135, 317, 547, -230, 212, 256.9, -44.9], ["Binatlı YSK", 176, 57, 39, 80, 278, 341, -63, 210, 217.4, -7.4], ["Baf Ülkü Yurdu", 152, 51, 30, 71, 228, 284, -56, 183, 186.0, -3.0], ["Bostancı Bağcıl SK", 130, 42, 36, 52, 202, 217, -15, 162, 173.4, -11.4], ["Hamitköy ŞHSK", 141, 43, 27, 71, 196, 273, -77, 156, 164.4, -8.4], ["Mormenekşe GBSK", 138, 44, 22, 72, 190, 278, -88, 154, 159.6, -5.6], ["Yeniboğaziçi DSK", 168, 33, 36, 99, 180, 379, -199, 135, 167.6, -32.6], ["Değirmenlik SK", 93, 37, 14, 42, 138, 170, -32, 125, 117.5, 7.5], ["Karşıyaka SK", 91, 32, 19, 40, 161, 200, -39, 115, 111.4, 3.6], ["Esentepe KSKK", 92, 29, 16, 47, 125, 167, -42, 103, 100.9, 2.1], ["Serdarlı GB", 78, 25, 22, 31, 105, 126, -21, 97, 99.9, -2.9], ["Yalova SK", 86, 23, 23, 40, 130, 171, -41, 92, 104.5, -12.5], ["Lapta Türk Birliği SK", 78, 18, 15, 45, 75, 176, -101, 69, 86.0, -17.0], ["Düzkaya KOSK", 56, 13, 11, 32, 76, 129, -53, 50, 58.1, -8.1], ["Bellapais Tatlısu HOSK", 26, 6, 3, 17, 34, 57, -23, 21, 30.2, -9.2], ["Girne Halk Evi SK", 60, 5, 6, 49, 64, 168, -104, 21, 53.5, -32.5], ["Ozanköy SK", 30, 4, 7, 19, 29, 76, -47, 19, 24.9, -5.9], ["Aslanköy GSD", 2, 1, 0, 1, 4, 2, 2, 3, 2.6, 0.4]], "1. Lig": [["Düzkaya KOSK", 304, 130, 66, 108, 485, 436, 49, 456, 446.7, 9.3], ["Yalova SK", 287, 119, 83, 85, 439, 346, 93, 440, 442.4, -2.4], ["Esentepe KSKK", 278, 117, 78, 83, 470, 358, 112, 429, 439.9, -10.9], ["Mormenekşe GBSK", 262, 112, 61, 89, 419, 384, 35, 397, 380.4, 16.6], ["Hamitköy ŞHSK", 246, 100, 50, 96, 402, 369, 33, 350, 357.3, -7.3], ["Dumlupınar TSK", 218, 99, 43, 76, 405, 301, 104, 340, 321.1, 18.9], ["Değirmenlik SK", 201, 97, 40, 64, 357, 281, 76, 331, 307.8, 23.2], ["Maraş GSK", 258, 90, 55, 113, 437, 491, -54, 325, 343.2, -18.2], ["Binatlı YSK", 224, 85, 61, 78, 323, 333, -10, 316, 306.6, 9.4], ["Lapta Türk Birliği SK", 232, 82, 45, 105, 326, 347, -21, 291, 294.4, -3.4], ["L. Gençler Birliği SK", 172, 83, 40, 49, 309, 239, 70, 289, 268.8, 20.2], ["Yeniboğaziçi DSK", 191, 80, 45, 66, 327, 270, 57, 285, 267.2, 17.8], ["Göçmenköy İYSK", 188, 83, 33, 72, 300, 267, 33, 282, 270.2, 11.8], ["Gönyeli SK", 140, 71, 21, 48, 274, 209, 65, 234, 200.2, 33.8], ["Girne Halk Evi SK", 144, 61, 29, 54, 224, 199, 25, 212, 195.6, 16.4], ["Baf Ülkü Yurdu", 168, 56, 37, 75, 239, 247, -8, 205, 218.9, -13.9], ["Ozanköy SK", 166, 56, 37, 73, 235, 341, -106, 205, 211.5, -6.5], ["Türk Ocağı Limasol SK", 114, 59, 27, 28, 204, 113, 91, 204, 171.9, 32.1], ["Görneç KSK", 192, 53, 45, 94, 267, 388, -121, 204, 230.9, -26.9], ["Gençlik Gücü TSK", 108, 62, 15, 31, 233, 140, 93, 201, 164.2, 36.8], ["M. Hacıali Yılmazköy SK", 121, 44, 39, 38, 173, 169, 4, 171, 173.6, -2.6], ["Çanakkale TSK", 204, 46, 33, 125, 233, 511, -278, 171, 204.4, -33.4], ["M. Karşıyaka ASK", 114, 39, 36, 39, 163, 167, -4, 153, 162.2, -9.2], ["Mesarya SK", 76, 38, 18, 20, 167, 115, 52, 132, 124.7, 7.3], ["Bostancı Bağcıl SK", 117, 30, 29, 58, 151, 188, -37, 119, 136.9, -17.9], ["Akova Vuda TÇBSK", 78, 33, 18, 27, 165, 138, 27, 117, 116.1, 0.9], ["Geçitkale GSK", 118, 32, 20, 66, 171, 280, -109, 116, 136.2, -20.2], ["Dörtyol SK", 88, 31, 19, 38, 145, 164, -19, 112, 118.6, -6.6], ["Kozanköy KSK", 60, 29, 9, 22, 92, 75, 17, 96, 94.8, 1.2], ["Türkmenköy ASK", 78, 23, 26, 29, 82, 108, -26, 95, 107.0, -12.0], ["Denizli SK", 52, 20, 14, 18, 60, 52, 8, 74, 77.0, -3.0], ["Çetinkaya TSK", 30, 21, 5, 4, 82, 27, 55, 68, 56.2, 11.8], ["Alsancak Yeşilova SK", 44, 17, 13, 14, 70, 66, 4, 64, 61.8, 2.2], ["Karşıyaka SK", 30, 20, 3, 7, 83, 38, 45, 63, 57.3, 5.7], ["Doğancı SK", 61, 17, 12, 32, 84, 110, -26, 63, 75.6, -12.6], ["Küçük Kaymaklı TSK", 30, 18, 5, 7, 88, 30, 58, 59, 56.0, 3.0], ["Aslanköy GSD", 30, 17, 6, 7, 70, 27, 43, 57, 56.7, 0.3], ["Serdarlı GB", 26, 15, 9, 2, 61, 17, 44, 54, 43.7, 10.3], ["Mehmetçik TÇBSK", 48, 13, 14, 21, 54, 70, -16, 53, 63.8, -10.8], ["İncirli SK", 60, 13, 13, 34, 63, 128, -65, 52, 68.1, -16.1], ["Akıncılar GSK", 52, 12, 12, 28, 55, 107, -52, 48, 62.5, -14.5], ["Dipkarpaz SK", 48, 9, 7, 32, 58, 137, -79, 34, 56.6, -22.6], ["Bellapais Tatlısu HOSK", 26, 8, 7, 11, 43, 50, -7, 31, 31.3, -0.3], ["Vadili TÇBSK", 56, 4, 15, 37, 44, 156, -112, 27, 54.8, -27.8], ["Kaplıca Karadeniz 61 SK", 30, 4, 2, 24, 27, 89, -62, 14, 31.0, -17.0], ["Yenierenköy TSK", 30, 3, 3, 24, 40, 123, -83, 12, 26.4, -14.4], ["Karaoğlanoğlu SK", 2, 2, 0, 0, 5, 2, 3, 6, 3.3, 2.7], ["Lefke TSK", 2, 1, 0, 1, 7, 3, 4, 3, 2.8, 0.2], ["Dikmen Gücü SK", 2, 1, 0, 1, 4, 4, 0, 3, 3.2, -0.2], ["Akdoğan SK", 2, 0, 0, 2, 2, 7, -5, 0, 2.8, -2.8]]}};
+</script>
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const SERIES = ["--s1","--s2","--s3","--s4","--s5"];
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = n => n.toLocaleString("tr-TR",{maximumFractionDigits:0});
+const fmt1 = n => n.toLocaleString("tr-TR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const pct = n => (n*100).toLocaleString("tr-TR",{maximumFractionDigits:0})+"%";
+
+/* ---------- tema ---------- */
+const themeBtn = $("#themeBtn");
+themeBtn.addEventListener("click",()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  const dark = cur ? cur==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+  themeBtn.setAttribute("aria-pressed", String(!dark));
+  drawChart(); drawPred();
+});
+
+/* ---------- üst istatistikler ---------- */
+const M = DATA.meta;
+$("#stats").innerHTML = [
+  [fmt(M.mac), "lig maçı işlendi"],
+  [String(M.kulup), "kulüp reytinglendi"],
+  [String(DATA.sezonlar.length), "sezon (2011-26)"],
+  [pct(M.holdout[0].isabet), "test isabeti"]
+].map(([b,s])=>`<div class="stat"><b class="num">${b}</b><span>${s}</span></div>`).join("");
+
+/* ---------- sıralama tablosu ---------- */
+let ligFiltre = "Tümü";
+const ligler = ["Tümü","Süper Lig","1. Lig"];
+$("#ligFilter").innerHTML = ligler.map(l=>
+  `<button class="chip" type="button" data-lig="${l}" aria-pressed="${l===ligFiltre}">${l}</button>`).join("");
+$("#ligFilter").addEventListener("click",e=>{
+  const b = e.target.closest(".chip"); if(!b) return;
+  ligFiltre = b.dataset.lig;
+  [...$("#ligFilter").children].forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.lig===ligFiltre)));
+  drawRank();
+});
+function drawRank(){
+  const rows = DATA.siralama.filter(r => ligFiltre==="Tümü" ? r.lig!=="Aktif değil" : r.lig===ligFiltre);
+  const lo = 1350, hi = Math.max(...rows.map(r=>r.elo));
+  $("#rankTbl tbody").innerHTML = rows.map((r,i)=>{
+    const w = Math.max(3, Math.min(100, (r.elo-lo)/(hi-lo)*100));
+    return `<tr class="${i<3?"top":""}">
+      <td class="rank num">${i+1}</td>
+      <td>${r.takim}</td>
+      <td><span class="lig ${r.lig==="Süper Lig"?"sl":""}">${r.lig}</span></td>
+      <td class="r num">${fmt1(r.elo)}</td>
+      <td><div class="bar"><i style="width:${w}%"></i></div></td></tr>`;
+  }).join("");
+}
+drawRank();
+$("#modelnot").textContent =
+  `Model: K=${M.params.k} · ev avantajı ${M.params.hfa} puan · gol farkı ağırlıklı · `
+  + `sezon başı %${M.params.regress*100} ortalamaya çekme. `
+  + `${fmt(M.mac)} maç, ${M.kulup} kulüp, ${M.ilk.slice(0,4)}-${M.son.slice(0,4)}. `
+  + `Şüpheli arşiv tekrarları modele girmez.`;
+
+/* ---------- navigasyon: görünen bölümü işaretle ---------- */
+(function(){
+  const baglar = [...document.querySelectorAll(".nav-links a")];
+  const bolumler = baglar.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  if(!bolumler.length || !("IntersectionObserver" in window)) return;
+  const goren = new Set();
+  const isaretle = () => {
+    let aktif = null;
+    for(const b of bolumler) if(goren.has(b)){ aktif = b; break; }
+    baglar.forEach(a => a.setAttribute("aria-current",
+      String(aktif !== null && a.getAttribute("href") === "#"+aktif.id)));
+  };
+  const io = new IntersectionObserver(kayitlar => {
+    for(const k of kayitlar) k.isIntersecting ? goren.add(k.target) : goren.delete(k.target);
+    isaretle();
+  }, {rootMargin: "-56px 0px -55% 0px"});
+  bolumler.forEach(b => io.observe(b));
+})();
+
+/* ---------- puan cetvelleri ---------- */
+const TUM = "Tüm zamanlar";
+let cSezon = DATA.sezonlar[DATA.sezonlar.length-1], cLig = "Süper Lig";
+$("#cetvelSezon").innerHTML = [TUM, ...DATA.sezonlar].map(s=>
+  `<button class="chip" type="button" data-s="${s}">${s}</button>`).join("");
+$("#cetvelLig").innerHTML = ["Tümü","Süper Lig","1. Lig"].map(l=>
+  `<button class="chip" type="button" data-l="${l}">${l}</button>`).join("");
+$("#cetvelSezon").addEventListener("click",e=>{
+  const b = e.target.closest(".chip"); if(!b) return;
+  cSezon = b.dataset.s;
+  if(cSezon !== TUM && cLig === "Tümü") cLig = "Süper Lig";   // tek sezonda iki lig birleştirilemez
+  drawCetvel();
+});
+$("#cetvelLig").addEventListener("click",e=>{
+  const b = e.target.closest(".chip"); if(!b || b.disabled) return;
+  cLig = b.dataset.l; drawCetvel();
+});
+function drawCetvel(){
+  const tumZaman = cSezon === TUM;
+  const rows = tumZaman ? DATA.puan_tum[cLig] : (DATA.puan_sezon[cSezon+"|"+cLig] || []);
+  // biten sezonda herkes aynı sayıda maç oynar, P/M puanla aynı sıralamayı verir -> gizle
+  const esitMac = rows.length && rows.every(r=>r[1]===rows[0][1]);
+  const pmGoster = rows.length && !esitMac;
+  $("#thPM").hidden = !pmGoster;
+  [...$("#cetvelSezon").children].forEach(c=>c.setAttribute("aria-pressed",String(c.dataset.s===cSezon)));
+  [...$("#cetvelLig").children].forEach(c=>{
+    c.disabled = (!tumZaman && c.dataset.l === "Tümü");
+    c.style.opacity = c.disabled ? .4 : 1;
+    c.setAttribute("aria-pressed",String(c.dataset.l===cLig));
+  });
+  $("#puanTbl tbody").innerHTML = rows.map((r,i)=>{
+    const [t,O,G,B,M,A,Y,Av,P,xP,sapma] = r;
+    const sinif = sapma > 0.5 ? "iyi" : (sapma < -0.5 ? "kotu" : "notr");
+    return `<tr class="${i===0?"top":""}">
+      <td class="rank num">${i+1}</td><td>${t}</td>
+      <td class="r num">${O}</td><td class="r num">${G}</td><td class="r num">${B}</td>
+      <td class="r num">${M}</td><td class="r num">${A}</td><td class="r num">${Y}</td>
+      <td class="r num">${Av>0?"+":""}${Av}</td><td class="r num"><b>${P}</b></td>
+      <td class="r num" style="color:var(--ink-2)">${fmt1(xP)}</td>
+      <td class="r num sapma ${sinif}">${sapma>0?"+":""}${fmt1(sapma)}</td>
+      <td class="r num" ${pmGoster?"":"hidden"} style="color:var(--ink-2)">${(P/O).toFixed(2).replace(".",",")}</td></tr>`;
+  }).join("");
+  const mac = rows.reduce((s,r)=>s+r[1],0)/2;
+  $("#cetvelNot").textContent = rows.length
+    ? `${tumZaman ? cLig+" — "+DATA.sezonlar.length+" sezonun toplamı" : cSezon+" "+cLig} · ${rows.length} kulüp · ${fmt(mac)} maç`
+      + (tumZaman ? "" : (rows[0][1] < 26 ? " · sezon sürüyor" : ` · şampiyon ${rows[0][0]}`))
+    : "Bu sezon için kayıt yok.";
+}
+drawCetvel();
+
+/* ---------- zirve + model tabloları ---------- */
+$("#peakTbl tbody").innerHTML = DATA.zirve.slice(0,10).map((r,i)=>
+  `<tr class="${i===0?"top":""}"><td class="rank num">${i+1}</td><td>${r.takim}</td>
+   <td class="num" style="color:var(--ink-2)">${r.sezon}</td><td class="r num">${fmt1(r.elo)}</td></tr>`).join("");
+$("#modelTbl tbody").innerHTML = M.holdout.map((r,i)=>
+  `<tr class="${i===0?"top":""}"><td>${r.model}</td><td class="r num">${r.logloss.toFixed(3)}</td>
+   <td class="r num">${r.brier.toFixed(3)}</td><td class="r num">${pct(r.isabet)}</td></tr>`).join("");
+
+/* ---------- ELO evrimi grafiği ---------- */
+const SEZ = DATA.sezonlar;
+const takimlar = Object.keys(DATA.tarihce).sort((a,b)=>a.localeCompare(b,"tr"));
+let secili = DATA.siralama.filter(r=>r.lig==="Süper Lig").slice(0,4).map(r=>r.takim);
+$("#teamPick").innerHTML = takimlar.map(t=>
+  `<button class="chip" type="button" data-t="${t}" aria-pressed="${secili.includes(t)}"></button>`).join("");
+function paintPicks(){
+  [...$("#teamPick").children].forEach(c=>{
+    const i = secili.indexOf(c.dataset.t);
+    c.setAttribute("aria-pressed", String(i>=0));
+    c.innerHTML = (i>=0 ? `<span class="dot" style="background:var(${SERIES[i]})"></span>` : "") + c.dataset.t;
+  });
+}
+paintPicks();
+$("#teamPick").addEventListener("click",e=>{
+  const b = e.target.closest(".chip"); if(!b) return;
+  const t = b.dataset.t, i = secili.indexOf(t);
+  if(i>=0) secili.splice(i,1);
+  else { if(secili.length>=5) secili.shift(); secili.push(t); }
+  paintPicks(); drawChart();
+});
+
+const W=900,H=380,PAD={t:18,r:18,b:38,l:52};
+let pts = [];
+function drawChart(){
+  const svg = $("#chart");
+  const vals = secili.flatMap(t=>DATA.tarihce[t]).filter(v=>v!=null);
+  const lo = vals.length ? Math.floor((Math.min(...vals)-30)/50)*50 : 1300;
+  const hi = vals.length ? Math.ceil((Math.max(...vals)+30)/50)*50 : 1800;
+  const X = i => PAD.l + i*(W-PAD.l-PAD.r)/(SEZ.length-1);
+  const Y = v => PAD.t + (hi-v)/(hi-lo)*(H-PAD.t-PAD.b);
+  const ink2 = cssv("--ink-2"), ink3 = cssv("--ink-3"), line = cssv("--line"), surf = cssv("--surface");
+  let s = "";
+  const step = Math.max(50, Math.ceil((hi-lo)/6/50)*50);
+  for(let v=lo; v<=hi; v+=step){
+    s += `<line x1="${PAD.l}" y1="${Y(v).toFixed(1)}" x2="${W-PAD.r}" y2="${Y(v).toFixed(1)}" stroke="${line}" stroke-width="1"/>`;
+    s += `<text x="${PAD.l-9}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" fill="${ink3}" font-size="11" font-family="JetBrains Mono, monospace">${v}</text>`;
+  }
+  SEZ.forEach((sz,i)=>{ if(i%2===0 || i===SEZ.length-1)
+    s += `<text x="${X(i).toFixed(1)}" y="${H-14}" text-anchor="middle" fill="${ink3}" font-size="11" font-family="JetBrains Mono, monospace">${sz.slice(2,4)}/${sz.slice(-2)}</text>`;});
+  pts = [];
+  secili.forEach((t,si)=>{
+    const col = cssv(SERIES[si]); const seq = DATA.tarihce[t];
+    let seg = [];
+    const flush = () => { if(seg.length>1)
+        s += `<path d="M${seg.map(p=>p.x.toFixed(1)+" "+p.y.toFixed(1)).join(" L")}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+      else if(seg.length===1)
+        s += `<circle cx="${seg[0].x.toFixed(1)}" cy="${seg[0].y.toFixed(1)}" r="3" fill="${col}"/>`;
+      seg=[]; };
+    seq.forEach((v,i)=>{ if(v==null){flush();return;} const p={x:X(i),y:Y(v)}; seg.push(p); pts.push({i,si,t,v,col,...p}); });
+    flush();
+    const last = seq.map((v,i)=>[v,i]).filter(a=>a[0]!=null).pop();
+    if(last){
+      s += `<circle cx="${X(last[1]).toFixed(1)}" cy="${Y(last[0]).toFixed(1)}" r="4.5" fill="${col}" stroke="${surf}" stroke-width="2"/>`;
+    }
+  });
+  s += `<line id="cross" x1="0" y1="${PAD.t}" x2="0" y2="${H-PAD.b}" stroke="${ink2}" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>`;
+  svg.innerHTML = s;
+}
+drawChart();
+const tip = $("#tip");
+$("#chartBox").addEventListener("pointermove",e=>{
+  if(!secili.length) return;
+  const box = $("#chart").getBoundingClientRect();
+  const x = (e.clientX-box.left)/box.width*W;
+  const i = Math.max(0, Math.min(SEZ.length-1, Math.round((x-PAD.l)/((W-PAD.l-PAD.r)/(SEZ.length-1)))));
+  const here = pts.filter(p=>p.i===i);
+  const cross = document.getElementById("cross");
+  if(cross){ cross.setAttribute("x1", PAD.l + i*(W-PAD.l-PAD.r)/(SEZ.length-1));
+             cross.setAttribute("x2", PAD.l + i*(W-PAD.l-PAD.r)/(SEZ.length-1));
+             cross.setAttribute("opacity", here.length?"1":"0"); }
+  if(!here.length){ tip.hidden = true; return; }
+  tip.hidden = false;
+  tip.innerHTML = `<b>${SEZ[i]}</b>` + here.sort((a,b)=>b.v-a.v).map(p=>
+    `<div class="row"><span><i style="background:${p.col}"></i>${p.t}</span><span class="num">${fmt1(p.v)}</span></div>`).join("");
+  const cx = (PAD.l + i*(W-PAD.l-PAD.r)/(SEZ.length-1))/W*box.width;
+  const tw = tip.offsetWidth;
+  tip.style.left = Math.max(0, Math.min(box.width-tw, cx - tw/2)) + "px";
+  tip.style.top = Math.max(0, (e.clientY-box.top) - tip.offsetHeight - 14) + "px";
+});
+$("#chartBox").addEventListener("pointerleave",()=>{ tip.hidden = true;
+  const c = document.getElementById("cross"); if(c) c.setAttribute("opacity","0"); });
+
+/* ---------- maç tahmini ---------- */
+const aktif = DATA.siralama.filter(r=>r.lig!=="Aktif değil");
+const opts = aktif.slice().sort((a,b)=>a.takim.localeCompare(b.takim,"tr"))
+  .map(r=>`<option value="${r.takim}">${r.takim} · ${fmt(r.elo)}</option>`).join("");
+$("#homeSel").innerHTML = opts; $("#awaySel").innerHTML = opts;
+$("#homeSel").value = aktif[0].takim; $("#awaySel").value = aktif[1].takim;
+let tarafsiz = false;
+$("#neutral").addEventListener("click",e=>{ tarafsiz = !tarafsiz;
+  e.currentTarget.setAttribute("aria-pressed",String(tarafsiz)); drawPred(); });
+$("#homeSel").addEventListener("change",drawPred);
+$("#awaySel").addEventListener("change",drawPred);
+const eloOf = t => (aktif.find(r=>r.takim===t)||{elo:1500}).elo;
+function probs(x){
+  const {b,c1} = M.logit, c2 = M.logit.c2, z = b*x;
+  const p0 = 1/(1+Math.exp(-(c1-z))), p1 = 1/(1+Math.exp(-(c2-z)));
+  return {dep:p0, bera:p1-p0, ev:1-p1};
+}
+function drawPred(){
+  const h = $("#homeSel").value, a = $("#awaySel").value;
+  if(h===a){ $("#probbar").innerHTML=""; $("#problegend").innerHTML="";
+    $("#prednote").textContent = "Aynı kulübü iki tarafa da seçtiniz."; return; }
+  let x = eloOf(h) - eloOf(a);
+  if(tarafsiz) x -= M.ev_avantaji;
+  const p = probs(x);
+  const parts = [["ev",p.ev,cssv("--s1")],["bera",p.bera,cssv("--ink-3")],["dep",p.dep,cssv("--s2")]];
+  $("#probbar").innerHTML = parts.map(([k,v,c])=>
+    `<div style="flex:${Math.max(v,0.001)};background:${c}">${v>0.08?pct(v):""}</div>`).join("");
+  $("#problegend").innerHTML =
+    `<span>${h} kazanır · <b class="num">${pct(p.ev)}</b></span>
+     <span>Beraberlik · <b class="num">${pct(p.bera)}</b></span>
+     <span>${a} kazanır · <b class="num">${pct(p.dep)}</b></span>`;
+  const diff = eloOf(h)-eloOf(a);
+  $("#prednote").textContent = `ELO farkı ${diff>0?"+":""}${fmt1(diff)} puan${tarafsiz?"" :`, ev avantajı +${fmt1(M.ev_avantaji)} puan`}. `
+    + `Beraberlik oranı KKTC liglerinde görece düşüktür (%20,6), model bunu öğrenmiştir.`;
+}
+drawPred();
+})();
+</script>
+</body>
+</html>

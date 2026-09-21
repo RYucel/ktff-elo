@@ -1,0 +1,57 @@
+{
+  "params": {
+    "k": 40,
+    "hfa": 60,
+    "gd_mode": "wfe",
+    "regress": 0.25,
+    "tier_gap": 120,
+    "new_penalty": 40,
+    "base": 1500.0,
+    "scale": 400.0,
+    "gd_two": 1.5,
+    "gd_num": 11.0,
+    "gd_den": 8.0
+  },
+  "mac_sayisi": 5962,
+  "kulup_sayisi": 54,
+  "ilk": "2011-09-24",
+  "son": "2026-09-20",
+  "logit": {
+    "b": 0.004981327104569071,
+    "c1": -0.7622861573760074,
+    "c2": 0.1894642933753673
+  },
+  "ev_avantaji_elo": 57.49691316950709,
+  "logloss_icsel": 0.973698219069421,
+  "isabet_icsel": 0.5378295758502102,
+  "holdout": [
+    {
+      "model": "Gol farkı ağırlıklı (nihai)",
+      "logloss": 0.9588032346135288,
+      "brier": 0.5680963448465564,
+      "isabet": 0.550603915035402,
+      "test_mac": 2401
+    },
+    {
+      "model": "Klasik ELO (sabit K)",
+      "logloss": 0.9636840115854047,
+      "brier": 0.5715660971788479,
+      "isabet": 0.5422740524781341,
+      "test_mac": 2401
+    },
+    {
+      "model": "Sezon çekmesi yok",
+      "logloss": 0.9622748926360682,
+      "brier": 0.5703387623058771,
+      "isabet": 0.5481049562682215,
+      "test_mac": 2401
+    },
+    {
+      "model": "Taban oran (referans)",
+      "logloss": 1.049572458530851,
+      "brier": 0.6354956711692216,
+      "isabet": 0.4523115368596418,
+      "test_mac": 2401
+    }
+  ]
+}
