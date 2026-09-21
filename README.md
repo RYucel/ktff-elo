@@ -51,14 +51,39 @@ istekleri doğrudan varlık katmanı karşılar.
 | `/veri/*.csv` | Üretilen tüm veri setleri, CORS açık |
 
 Önbellek ve güvenlik başlıkları `site/_headers` ile verilir (HTML her istekte
-doğrulanır, veri dosyaları 1 saat önbelleklenir).
+doğrulanır, veri dosyaları 1 saat önbelleklenir). `Content-Type` buradan
+değiştirilemez — Cloudflare onu uzantıdan belirler; kodlama HTML içindeki
+`<meta charset="utf-8">` ile bildirilir.
+
+## Haftalık otomatik güncelleme
+
+`.github/workflows/haftalik.yml` her pazartesi 06:00 UTC'de (KKTC 09:00) çalışır,
+elle de tetiklenebilir. Akış: KTFF'den yeni sonuçları çek → değişiklik yoksa dur →
+modeli yeniden kur → siteyi yayımla → yeni maçları depoya işle.
+
+Kazıyıcı ayrıca tek başına çalıştırılabilir:
+
+```bash
+python src/ktff_cek.py --kuru     # yazmadan ne ekleneceğini göster
+python src/ktff_cek.py            # data/matches_raw.csv'ye ekle
+python src/ktff_cek.py --sayfa 4  # daha geriye git (sezon başı toparlama)
+```
+
+Yalnızca güncel sezon yarışmaları taranır: `competition=60` (Süper Lig) ve
+`62` (1. Lig). Maçlar `mac_id` ile tekilleştirilir, aynı maç iki kez eklenmez.
+Yeni bir kulüp görülürse `teams_raw.txt` **sonuna** eklenir (indeks sırası
+korunur) ve günlükte uyarı basılır — sponsorlu bir isim varyantıysa
+`build_dataset.py` içindeki `ALIAS` sözlüğüne elle eklemek gerekir.
+
+İş akışının çalışması için depoda iki secret tanımlı olmalı:
+`CLOUDFLARE_API_TOKEN` (Workers dağıtım yetkisi) ve `CLOUDFLARE_ACCOUNT_ID`.
 
 ## Klasörler
 
 ```
 raw/        KTFF'den kazınan ham satırlar (chunk0 takım sözlüğünü de içerir)
 data/       matches_raw.csv (6.032 satır) + teams_raw.txt (59 etiket)
-src/        pipeline
+src/        pipeline (ktff_cek.py kazıyıcı, site_build.py yayın derleyicisi dahil)
 out/        üretilen veri setleri, model çıktıları ve web sayfası
 site/       Cloudflare'e dağıtılan klasör (src/site_build.py üretir, elle dokunma)
 ```
