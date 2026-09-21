@@ -18,7 +18,12 @@ MACLAR = ROOT/"data/matches_raw.csv"
 
 URL = "https://ktff.org/bilgi-bankasi/maclar?page={sayfa}&competition={yarisma}"
 YARISMALAR = {60: 1, 62: 2}          # KTFF yarışma kimliği -> bizim lig kodu (1/2)
-BASLIK = {"User-Agent": "ktff-elo/1.0 (+https://ktff-elo.stevevaius.workers.dev)"}
+BASLIK = {
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
+}
 BEKLE = 1.5                           # sayfalar arası saniye; siteye nazik davran
 
 KART = re.compile(
@@ -39,7 +44,15 @@ def temiz(s):
 
 def sayfa_cek(yarisma, sayfa):
     r = requests.get(URL.format(sayfa=sayfa, yarisma=yarisma), headers=BASLIK, timeout=30)
-    r.raise_for_status()
+    if r.status_code != 200:
+        # Teşhis: ktff.org Cloudflare arkasında; veri merkezi IP'leri engellenebiliyor.
+        print(f"HTTP {r.status_code} — yarışma {yarisma}, sayfa {sayfa}", file=sys.stderr)
+        for h in ("server", "cf-ray", "cf-mitigated", "retry-after"):
+            if h in r.headers:
+                print(f"  {h}: {r.headers[h]}", file=sys.stderr)
+        govde = re.sub(r"<[^>]+>", " ", r.text[:1500])
+        print("  gövde:", re.sub(r"\s+", " ", govde).strip()[:300], file=sys.stderr)
+        r.raise_for_status()
     r.encoding = "utf-8"
     return r.text
 
