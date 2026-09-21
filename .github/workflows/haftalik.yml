@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: "0 6 * * 1"
   workflow_dispatch:        # gerektiğinde elle tetiklenebilir
+    inputs:
+      zorla:
+        description: "Yeni maç olmasa da modeli kurup siteyi yeniden yayımla"
+        type: boolean
+        default: false
 
 concurrency:
   group: haftalik
@@ -36,14 +41,14 @@ jobs:
         run: |
           if git diff --quiet -- data/; then
             echo "degisti=false" >> "$GITHUB_OUTPUT"
-            echo "Yeni maç yok, pipeline atlanıyor."
+            echo "Yeni maç yok. (zorla=${{ inputs.zorla }})"
           else
             echo "degisti=true" >> "$GITHUB_OUTPUT"
             git diff --stat -- data/
           fi
 
       - name: Modeli yeniden kur
-        if: steps.kontrol.outputs.degisti == 'true'
+        if: steps.kontrol.outputs.degisti == 'true' || inputs.zorla
         working-directory: src
         run: |
           python build_dataset.py
@@ -51,17 +56,17 @@ jobs:
           python analiz.py
 
       - uses: actions/setup-node@v4
-        if: steps.kontrol.outputs.degisti == 'true'
+        if: steps.kontrol.outputs.degisti == 'true' || inputs.zorla
         with:
           node-version: "22"
           cache: npm
 
       - name: Wrangler kur
-        if: steps.kontrol.outputs.degisti == 'true'
+        if: steps.kontrol.outputs.degisti == 'true' || inputs.zorla
         run: npm ci
 
       - name: Siteyi derle ve yayımla
-        if: steps.kontrol.outputs.degisti == 'true'
+        if: steps.kontrol.outputs.degisti == 'true' || inputs.zorla
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
